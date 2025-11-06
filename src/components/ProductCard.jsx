@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="bg-white/80 backdrop-blur rounded-xl border border-white/40 shadow-sm hover:shadow-md transition flex flex-col">
-      <div className="h-40 bg-gradient-to-br from-pink-100 via-white to-indigo-50 rounded-t-xl flex items-center justify-center text-5xl">
+      <div className="h-40 bg-linear-to-br from-pink-100 via-white to-indigo-50 rounded-t-xl flex items-center justify-center text-5xl">
         🪵
       </div>
       <div className="p-4 flex-1 flex flex-col gap-2">

@@ -65,7 +65,7 @@ export default function Home() {
           className="lg:justify-self-end"
         >
           <div className="bg-white/80 backdrop-blur rounded-2xl shadow-md border border-white/50 p-6 w-full max-w-sm mx-auto">
-            <div className="aspect-video rounded-xl bg-gradient-to-br from-pink-100 via-white to-indigo-50 mb-4 flex items-center justify-center text-6xl">
+            <div className="aspect-video rounded-xl bg-linear-to-br from-pink-100 via-white to-indigo-50 mb-4 flex items-center justify-center text-6xl">
               🪵
             </div>
             <h2 className="text-lg font-semibold text-slate-900">

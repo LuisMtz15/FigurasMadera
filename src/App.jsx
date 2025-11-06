@@ -10,7 +10,7 @@ import Admin from "./pages/Admin.jsx";
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-pink-50 via-white to-indigo-50">
+    <div className="min-h-screen flex flex-col bg-linear-to-b from-pink-50 via-white to-indigo-50">
       <Navbar />
       <main className="flex-1">
         <Routes>

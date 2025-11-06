@@ -82,7 +82,7 @@ export default function Admin() {
   // si NO está autorizado, mostramos la pantallita de acceso
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 via-white to-indigo-50">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-pink-50 via-white to-indigo-50">
         <div className="bg-white/80 backdrop-blur border border-white/40 rounded-xl p-6 w-full max-w-sm space-y-4">
           <h1 className="text-xl font-bold text-slate-900">
             Acceso para la dueña
