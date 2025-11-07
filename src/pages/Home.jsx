@@ -1,168 +1,187 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { SITE_CONFIG } from "../config/site.js";
+// src/pages/Home.jsx
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../lib/productsApi";
-import { THEME } from "../config/theme";
+import { Link } from "react-router-dom";
+import { fetchProducts } from "../lib/productsApi.js";
+import heroImg from "../assets/Sin_Fondo.png";
+
+const COLORS = {
+  bgTop: "#FDF5F0",
+  bgBottom: "#F9E0D1",
+  dark: "#5A3B2E",
+  accent: "#E98A6B",
+};
 
 export default function Home() {
-  const [featured, setFeatured] = useState(null);
+  const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const products = await fetchProducts();
-      if (products && products.length > 0) {
-        setFeatured(products[0]);
-      } else {
-        setFeatured(null);
-      }
+      setLoading(true);
+      const data = await fetchProducts();
+      setFeatured(data.slice(0, 3));
+      setLoading(false);
     })();
   }, []);
 
-  const generalMessage = encodeURIComponent(SITE_CONFIG.whatsappMessage);
-  const generalLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${generalMessage}`;
-
   return (
     <div
-      className="container-main py-12 lg:py-16"
-      style={{ background: "transparent" }}
+      className="min-h-screen flex flex-col"
+      style={{
+        background: `linear-gradient(180deg, ${COLORS.bgTop} 0%, ${COLORS.bgBottom} 100%)`,
+      }}
     >
-      <div className="grid gap-10 lg:grid-cols-2 items-center">
-        {/* Texto */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-5"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
-            style={{ backgroundColor: THEME.mint, color: THEME.dark }}
-          >
-            Belleza en Madera · artesanal
-          </span>
-
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight"
-              style={{ color: THEME.dark }}>
-            Figuras de madera con colores suaves ✨
-          </h1>
-
-          <p className="text-slate-600 max-w-xl">
-            Piezas pintadas a mano, ideales para hogar, oficina o regalo. Si te
-            gusta una, nos escribes por WhatsApp y la apartas.
+      {/* HERO */}
+      <section className="container-main py-10 md:py-16 flex flex-col md:flex-row gap-10 items-center">
+        <div className="flex-1 space-y-4">
+          <p className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-white/70 text-[#5A3B2E] border border-white/40">
+            Figuras de madera pintadas a mano
           </p>
-
-          <div className="flex flex-wrap gap-3">
+          <h1
+            className="text-4xl md:text-5xl font-bold leading-tight"
+            style={{ color: COLORS.dark }}
+          >
+            Belleza en Madera
+          </h1>
+          <p className="text-slate-600 max-w-xl">
+            Piezas artesanales, coloridas y listas para decorar tu hogar u
+            oficina. Hechas con cariño y pensadas para temporadas especiales.
+          </p>
+          <div className="flex gap-3 flex-wrap">
             <Link
               to="/productos"
               className="px-5 py-2 rounded-md text-sm font-medium text-white"
-              style={{ backgroundColor: THEME.accent }}
+              style={{ backgroundColor: COLORS.accent }}
             >
               Ver productos
             </Link>
-            <a
-              href={generalLink}
-              target="_blank"
-              rel="noreferrer"
-              className="px-5 py-2 rounded-md text-sm font-medium border"
-              style={{ borderColor: "#E5D5CB", backgroundColor: "white" }}
+            <Link
+              to="/contacto"
+              className="px-5 py-2 rounded-md text-sm font-medium text-[#5A3B2E] bg-white/70 border border-white/40"
             >
-              Escribir por WhatsApp
-            </a>
+              Encargar una pieza
+            </Link>
           </div>
+        </div>
 
-          <p className="text-xs text-slate-500">
-            Hecho a mano · Colores pastel · Personalizable
-          </p>
-        </motion.div>
+        <div className="w-full md:w-80 lg:w-96">
+          <div className="bg-white/70 rounded-2xl p-6 border border-white/40 shadow-sm flex flex-col items-center gap-3">
+            <img
+              src={heroImg}
+              alt="Belleza en Madera"
+              className="h-32 w-auto object-contain"
+            />
+            <p className="text-sm text-slate-600 text-center">
+              Diseños personalizados, colores pastel y temas de temporada
+              (Navidad, Halloween, San Valentín y más).
+            </p>
+          </div>
+        </div>
+      </section>
 
-        {/* Tarjeta destacada */}
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="lg:justify-self-end"
-        >
-          <div
-            className="rounded-2xl shadow-md border p-6 w-full max-w-sm mx-auto"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.75)",
-              borderColor: "rgba(255,255,255,0.5)",
-            }}
+      {/* DESTACADOS */}
+      <section className="container-main pb-14 space-y-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2
+              className="text-2xl font-semibold"
+              style={{ color: COLORS.dark }}
+            >
+              Piezas destacadas
+            </h2>
+            <p className="text-slate-500 text-sm">
+              Lo más nuevo o lo que está por temporada.
+            </p>
+          </div>
+          <Link
+            to="/productos"
+            className="text-sm text-[#5A3B2E] hover:text-[#E98A6B]"
           >
-            {featured ? (
-              <>
-                {featured.image_url ? (
-                  <div className="aspect-video rounded-xl overflow-hidden mb-4"
-                       style={{ backgroundColor: THEME.bgSoft }}>
-                    <img
-                      src={featured.image_url}
-                      alt={featured.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className="aspect-video rounded-xl mb-4 flex items-center justify-center text-6xl"
-                    style={{
-                      background: `linear-gradient(135deg, ${THEME.surface}, #fff)`,
-                    }}
-                  >
-                    🪵
-                  </div>
-                )}
-                <h2 className="text-lg font-semibold" style={{ color: THEME.dark }}>
-                  {featured.name}
-                </h2>
-                <p className="text-sm text-slate-500 mb-3">
-                  {featured.description || "Figura de madera pintada a mano."}
-                </p>
-                <p className="text-base font-semibold text-slate-900 mb-4">
-                  {featured.price ? `$${featured.price} MXN` : ""}
-                </p>
-                <a
-                  href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
-                    `Hola 👋, vi la figura "${featured.name}" y quiero más información.`
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full inline-flex justify-center px-4 py-2 rounded-md text-sm font-medium text-white"
-                  style={{ backgroundColor: THEME.accent }}
-                >
-                  Pedir por WhatsApp
-                </a>
-              </>
-            ) : (
-              <>
-                <div
-                  className="aspect-video rounded-xl mb-4 flex items-center justify-center text-6xl"
-                  style={{
-                    background: `linear-gradient(135deg, ${THEME.surface}, #fff)`,
-                  }}
-                >
-                  🪵
-                </div>
-                <h2 className="text-lg font-semibold" style={{ color: THEME.dark }}>
-                  Aún no hay productos cargados
-                </h2>
-                <p className="text-sm text-slate-500 mb-4">
-                  Estamos subiendo las piezas. Escríbenos si buscas algo en
-                  específico.
-                </p>
-                <a
-                  href={generalLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full inline-flex justify-center px-4 py-2 rounded-md text-sm font-medium text-white"
-                  style={{ backgroundColor: THEME.accent }}
-                >
-                  Pedir por WhatsApp
-                </a>
-              </>
-            )}
+            Ver todos →
+          </Link>
+        </div>
+
+        {loading ? (
+          <p className="text-slate-500 text-sm">Cargando productos...</p>
+        ) : featured.length === 0 ? (
+          <div className="bg-white/60 border border-white/30 rounded-xl p-6 text-sm text-slate-500">
+            Aún no hay productos cargados. Agrega uno desde el panel de Admin y
+            aparecerán aquí ✨
           </div>
-        </motion.div>
-      </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-3">
+            {featured.map((p) => {
+              const onSale = p.on_sale && p.sale_price;
+              return (
+                <article
+                  key={p.id}
+                  className="bg-white/70 border border-white/40 rounded-xl p-4 flex flex-col"
+                >
+                  {/* AQUÍ CAMBIAMOS LA IMAGEN */}
+                  <div className="rounded-lg overflow-hidden mb-3 bg-[#FDF5F0] flex items-center justify-center h-48">
+                    {p.image_url ? (
+                      <img
+                        src={p.image_url}
+                        alt={p.name}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-4xl">
+                        🪵
+                      </div>
+                    )}
+                  </div>
+
+                  <h3
+                    className="text-base font-semibold truncate"
+                    style={{ color: COLORS.dark }}
+                  >
+                    {p.name}
+                  </h3>
+                  {p.category && (
+                    <p className="text-[11px] text-slate-500 mb-1">
+                      {p.category}
+                    </p>
+                  )}
+                  <p className="text-sm text-slate-600 line-clamp-2 mb-3">
+                    {p.description || "Figura de madera pintada a mano."}
+                  </p>
+
+                  <div className="flex items-center justify-between mt-auto">
+                    {onSale ? (
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-xs line-through text-slate-400">
+                          ${p.price} MXN
+                        </span>
+                        <span
+                          className="text-sm font-semibold"
+                          style={{ color: COLORS.dark }}
+                        >
+                          ${p.sale_price} MXN
+                        </span>
+                      </div>
+                    ) : (
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: COLORS.dark }}
+                      >
+                        {p.price ? `$${p.price} MXN` : ""}
+                      </p>
+                    )}
+
+                    <Link
+                      to="/contacto"
+                      className="text-xs px-3 py-1 rounded-md bg-[#E98A6B] text-white"
+                    >
+                      Pedir
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

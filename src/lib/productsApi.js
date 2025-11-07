@@ -1,6 +1,9 @@
 // src/lib/productsApi.js
 import { supabase } from "./supabaseClient";
 
+// usamos el mismo bucket que ya tenías
+const BUCKET = "product-images";
+
 // listar
 export async function fetchProducts() {
   const { data, error } = await supabase
@@ -24,7 +27,7 @@ export async function uploadProductImage(file) {
   const filePath = fileName;
 
   const { error: uploadError } = await supabase.storage
-    .from("product-images")
+    .from(BUCKET)
     .upload(filePath, file, {
       cacheControl: "3600",
       upsert: false,
@@ -35,7 +38,7 @@ export async function uploadProductImage(file) {
     throw uploadError;
   }
 
-  const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
   return { publicUrl: data.publicUrl, path: filePath };
 }
 
@@ -82,9 +85,7 @@ export async function deleteProductFromDb(id) {
 // borrar imagen del storage
 export async function deleteImageFromStorage(path) {
   if (!path) return;
-  const { error } = await supabase.storage
-    .from("product-images")
-    .remove([path]);
+  const { error } = await supabase.storage.from(BUCKET).remove([path]);
   if (error) {
     console.error("deleteImageFromStorage error:", error);
     // no lanzamos error para no romper el flujo

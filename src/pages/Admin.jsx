@@ -18,6 +18,15 @@ const COLORS = {
   accent: "#E98A6B",
 };
 
+const PRESET_CATEGORIES = [
+  "Halloween",
+  "Navidad",
+  "Fechas Patrias",
+  "Día del Maestro",
+  "Día de las Madres",
+  "San Valentín",
+];
+
 export default function Admin() {
   const [dbProducts, setDbProducts] = useState([]);
   const [form, setForm] = useState({
@@ -25,13 +34,15 @@ export default function Admin() {
     price: "",
     category: "",
     description: "",
+    on_sale: false,
+    sale_price: "",
   });
+  const [customCategory, setCustomCategory] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // comprobar sesión y cargar productos
   useEffect(() => {
     checkSession();
   }, []);
@@ -51,18 +62,26 @@ export default function Admin() {
   }
 
   function handleChange(e) {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === "checkbox") {
+      setForm((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+
+    if (name === "category") {
+      setForm((prev) => ({ ...prev, category: value }));
+      if (value !== "__custom") setCustomCategory("");
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleFileChange(e) {
     const f = e.target.files?.[0] ?? null;
     setFile(f);
-    if (f) {
-      setPreview(URL.createObjectURL(f));
-    } else {
-      setPreview(null);
-    }
+    if (f) setPreview(URL.createObjectURL(f));
+    else setPreview(null);
   }
 
   function resetForm() {
@@ -71,7 +90,10 @@ export default function Admin() {
       price: "",
       category: "",
       description: "",
+      on_sale: false,
+      sale_price: "",
     });
+    setCustomCategory("");
     setFile(null);
     setPreview(null);
     setEditingId(null);
@@ -79,8 +101,42 @@ export default function Admin() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.name.trim()) return alert("Ponle nombre");
-    if (!form.price.trim()) return alert("Ponle precio");
+
+    // convertimos a string para poder usar trim sin romper
+    const nameStr = String(form.name ?? "").trim();
+    const priceStr = String(form.price ?? "").trim();
+    const salePriceStr = String(form.sale_price ?? "").trim();
+
+    if (!nameStr) return alert("Ponle nombre");
+    if (!priceStr) return alert("Ponle precio");
+
+    const basePrice = Number(priceStr);
+    const isOnSale = form.on_sale;
+
+    // categoría
+    const finalCategory =
+      form.category === "__custom"
+        ? String(customCategory ?? "").trim()
+        : String(form.category ?? "").trim();
+
+    if (!finalCategory) return alert("Selecciona o escribe una categoría");
+
+    // validación promo
+    let salePriceNumber = null;
+    if (isOnSale) {
+      if (!salePriceStr) {
+        return alert("Pon el precio de descuento");
+      }
+      salePriceNumber = Number(salePriceStr);
+      if (isNaN(salePriceNumber)) {
+        return alert("El precio de descuento no es válido");
+      }
+      if (salePriceNumber >= basePrice) {
+        return alert(
+          "El precio de descuento debe ser menor que el precio normal"
+        );
+      }
+    }
 
     try {
       setLoading(true);
@@ -94,28 +150,25 @@ export default function Admin() {
         imagePath = uploaded.path;
       }
 
+      const productPayload = {
+        name: nameStr,
+        price: basePrice,
+        category: finalCategory,
+        description: String(form.description ?? "").trim(),
+        on_sale: isOnSale,
+        sale_price: isOnSale ? salePriceNumber : null,
+      };
+
+      if (imageUrl && imagePath) {
+        productPayload.image_url = imageUrl;
+        productPayload.image_path = imagePath;
+      }
+
       if (editingId) {
-        const payload = {
-          name: form.name.trim(),
-          price: Number(form.price),
-          category: form.category.trim() || "Sin categoría",
-          description: form.description.trim() || "",
-        };
-        if (imageUrl && imagePath) {
-          payload.image_url = imageUrl;
-          payload.image_path = imagePath;
-        }
-        await updateProductInDb(editingId, payload);
+        await updateProductInDb(editingId, productPayload);
         alert("Producto actualizado ✅");
       } else {
-        await addProductToDb({
-          name: form.name.trim(),
-          price: Number(form.price),
-          category: form.category.trim() || "Sin categoría",
-          description: form.description.trim() || "",
-          image_url: imageUrl,
-          image_path: imagePath,
-        });
+        await addProductToDb(productPayload);
         alert("Producto guardado ✅");
       }
 
@@ -130,13 +183,23 @@ export default function Admin() {
   }
 
   async function handleEdit(p) {
+    const cat = (p.category || "").trim();
+    const isPreset = PRESET_CATEGORIES.includes(cat);
+
     setEditingId(p.id);
     setForm({
       name: p.name || "",
-      price: p.price || "",
-      category: p.category || "",
+      // lo pasamos a string para que el input number no se queje
+      price: p.price !== null && p.price !== undefined ? String(p.price) : "",
+      category: isPreset ? cat : "__custom",
       description: p.description || "",
+      on_sale: !!p.on_sale,
+      sale_price:
+        p.sale_price !== null && p.sale_price !== undefined
+          ? String(p.sale_price)
+          : "",
     });
+    setCustomCategory(isPreset ? "" : cat);
     setPreview(p.image_url || null);
     setFile(null);
   }
@@ -164,7 +227,7 @@ export default function Admin() {
 
   return (
     <div className="container-main py-10 space-y-8">
-      {/* header admin */}
+      {/* header */}
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1
@@ -214,31 +277,98 @@ export default function Admin() {
           />
         </div>
 
-        <div>
-          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
-            Precio (MXN)
-          </label>
-          <input
-            type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-            placeholder="280"
-          />
+        {/* precio + promo */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-end">
+          <div className="flex-1">
+            <label
+              className="text-sm font-medium"
+              style={{ color: COLORS.dark }}
+            >
+              Precio (MXN)
+            </label>
+            <input
+              type="number"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              placeholder="280"
+              min="0"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="on_sale"
+              type="checkbox"
+              name="on_sale"
+              checked={form.on_sale}
+              onChange={handleChange}
+              className="h-4 w-4"
+            />
+            <label
+              htmlFor="on_sale"
+              className="text-sm"
+              style={{ color: COLORS.dark }}
+            >
+              Promoción
+            </label>
+          </div>
         </div>
 
-        <div>
+        {form.on_sale && (
+          <div>
+            <label
+              className="text-sm font-medium"
+              style={{ color: COLORS.dark }}
+            >
+              Precio con descuento (MXN)
+            </label>
+            <input
+              type="number"
+              name="sale_price"
+              value={form.sale_price}
+              onChange={handleChange}
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              placeholder="250"
+              min="0"
+            />
+            <p className="text-[10px] text-slate-400 mt-1">
+              Debe ser menor que el precio normal.
+            </p>
+          </div>
+        )}
+
+        {/* categoría */}
+        <div className="space-y-2">
           <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Categoría
           </label>
-          <input
+          <select
             name="category"
             value={form.category}
             onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-            placeholder="Navidad, Halloween..."
-          />
+            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA] bg-white"
+          >
+            <option value="" disabled>
+              Seleccionar categoría
+            </option>
+            {PRESET_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="__custom">Otra…</option>
+          </select>
+
+          {form.category === "__custom" && (
+            <input
+              type="text"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              placeholder="Escribe la categoría (ej. Primera Comunión)"
+            />
+          )}
         </div>
 
         <div>
@@ -255,13 +385,12 @@ export default function Admin() {
           />
         </div>
 
-        {/* campo de imagen actualizado */}
+        {/* imagen */}
         <div className="space-y-2">
           <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Imagen
           </label>
-          
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-sm rounded-md cursor-pointer hover:bg-slate-50 transition-all">
               Seleccionar archivo
               <input
@@ -351,9 +480,14 @@ export default function Admin() {
                   >
                     {p.name}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 mb-1">
                     ${p.price} · {p.category}
                   </p>
+                  {p.on_sale && p.sale_price && (
+                    <p className="text-[10px] text-red-500 font-medium">
+                      En promoción: ${p.sale_price}
+                    </p>
+                  )}
                   <div className="flex gap-2 mt-2">
                     <button
                       onClick={() => handleEdit(p)}
