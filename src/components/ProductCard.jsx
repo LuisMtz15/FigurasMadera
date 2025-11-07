@@ -3,7 +3,7 @@ import { SITE_CONFIG } from "../config/site.js";
 
 export default function ProductCard({ product }) {
   const message = encodeURIComponent(
-    `Hola 👋, vi la figura "${product.name}" en la página y quiero más información. Precio: $${product.price} MXN`
+    `Hola, vi la figura "${product.name}" en la página y quiero más información. Precio: $${product.price} MXN`
   );
 
   const waLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${message}`;

@@ -7,6 +7,8 @@ import Products from "./pages/Products.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Admin from "./pages/Admin.jsx";
+import Login from "./pages/Login.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -18,7 +20,15 @@ function App() {
           <Route path="/productos" element={<Products />} />
           <Route path="/quienes-somos" element={<About />} />
           <Route path="/contacto" element={<Contact />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

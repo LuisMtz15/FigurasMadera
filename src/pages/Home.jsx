@@ -2,20 +2,32 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { SITE_CONFIG } from "../config/site.js";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../lib/productsApi";
 
 export default function Home() {
+  const [featured, setFeatured] = useState(null);
+
+  // cargar 1 producto de Supabase
+  useEffect(() => {
+    (async () => {
+      const products = await fetchProducts();
+      // si hay al menos 1, usamos el primero
+      if (products && products.length > 0) {
+        setFeatured(products[0]);
+      } else {
+        setFeatured(null);
+      }
+    })();
+  }, []);
+
   const generalMessage = encodeURIComponent(SITE_CONFIG.whatsappMessage);
   const generalLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${generalMessage}`;
-
-  const featuredMessage = encodeURIComponent(
-    "Hola, quiero la figura 'Flor pastel' que vi en la página."
-  );
-  const featuredLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${featuredMessage}`;
 
   return (
     <div className="container-main py-12 lg:py-16">
       <div className="grid gap-10 lg:grid-cols-2 items-center">
-        {/* Texto */}
+        {/* Columna de texto */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +69,7 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* Tarjeta */}
+        {/* Columna derecha: destacado dinámico */}
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
@@ -65,26 +77,67 @@ export default function Home() {
           className="lg:justify-self-end"
         >
           <div className="bg-white/80 backdrop-blur rounded-2xl shadow-md border border-white/50 p-6 w-full max-w-sm mx-auto">
-            <div className="aspect-video rounded-xl bg-linear-to-br from-pink-100 via-white to-indigo-50 mb-4 flex items-center justify-center text-6xl">
-              🪵
-            </div>
-            <h2 className="text-lg font-semibold text-slate-900">
-              Flor pastel
-            </h2>
-            <p className="text-sm text-slate-500 mb-3">
-              Figura de madera pintada a mano, ideal para sala u oficina.
-            </p>
-            <p className="text-base font-semibold text-slate-900 mb-4">
-              $280 MXN
-            </p>
-            <a
-              href={featuredLink}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full inline-flex justify-center bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition"
-            >
-              Pedir por WhatsApp
-            </a>
+            {featured ? (
+              <>
+                {/* si sí hay producto */}
+                {featured.image_url ? (
+                  <div className="aspect-video rounded-xl bg-slate-100 mb-4 overflow-hidden">
+                    <img
+                      src={featured.image_url}
+                      alt={featured.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-video rounded-xl bg-gradient-to-br from-pink-100 via-white to-indigo-50 mb-4 flex items-center justify-center text-6xl">
+                    🪵
+                  </div>
+                )}
+                <h2 className="text-lg font-semibold text-slate-900">
+                  {featured.name}
+                </h2>
+                <p className="text-sm text-slate-500 mb-3">
+                  {featured.description || "Figura de madera pintada a mano."}
+                </p>
+                <p className="text-base font-semibold text-slate-900 mb-4">
+                  {featured.price ? `$${featured.price} MXN` : ""}
+                </p>
+                <a
+                  href={`https://wa.me/${
+                    SITE_CONFIG.whatsappNumber
+                  }?text=${encodeURIComponent(
+                    `Hola 👋, vi la figura "${featured.name}" y quiero más información.`
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full inline-flex justify-center bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition"
+                >
+                  Pedir por WhatsApp
+                </a>
+              </>
+            ) : (
+              <>
+                {/* si NO hay productos */}
+                <div className="aspect-video rounded-xl bg-gradient-to-br from-pink-100 via-white to-indigo-50 mb-4 flex items-center justify-center text-6xl">
+                  🪵
+                </div>
+                <h2 className="text-lg font-semibold text-slate-900">
+                    Aún no hay productos cargados
+                </h2>
+                <p className="text-sm text-slate-500 mb-4">
+                  La galería se está llenando. Si quieres pedir una figura,
+                  escríbenos directo.
+                </p>
+                <a
+                  href={generalLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full inline-flex justify-center bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition"
+                >
+                  Pedir por WhatsApp
+                </a>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
