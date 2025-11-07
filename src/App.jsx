@@ -1,5 +1,5 @@
 // src/App.jsx
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
@@ -12,7 +12,12 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-linear-to-b from-pink-50 via-white to-indigo-50">
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        background: `linear-gradient(180deg, #FEFAF7 0%, #FCEFE7 100%)`,
+      }}
+    >
       <Navbar />
       <main className="flex-1">
         <Routes>
@@ -29,6 +34,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
       <Footer />

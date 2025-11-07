@@ -2,6 +2,14 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/Logo_Maderitas.png";
+
+const COLORS = {
+  surface: "rgba(255,255,255,0.85)",
+  border: "rgba(252, 231, 218, 1)", // #FCE7DA
+  dark: "#5A3B2E",
+  accent: "#E98A6B",
+};
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,14 +19,13 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // si venía de /admin lo mandamos de regreso ahí
   const from = location.state?.from || "/admin";
 
   async function handleSubmit(e) {
     e.preventDefault();
     setErr("");
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -29,50 +36,79 @@ export default function Login() {
       return;
     }
 
-    // guardamos una marquita para no volver a pedir
     sessionStorage.setItem("figuras_admin_auth", "true");
-
     navigate(from, { replace: true });
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 via-white to-indigo-50">
-      <div className="bg-white/80 backdrop-blur border border-white/40 rounded-xl p-6 w-full max-w-sm space-y-4">
-        <h1 className="text-xl font-bold text-slate-900">Iniciar sesión</h1>
-        <p className="text-sm text-slate-600">
-          Solo personal autorizado.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label className="text-sm text-slate-700">Correo</label>
+    <div className="min-h-screen flex items-center justify-center px-4 py-10">
+      <div
+        className="w-full max-w-sm rounded-2xl p-6 space-y-5 shadow-sm"
+        style={{
+          backgroundColor: COLORS.surface,
+          border: `1px solid ${COLORS.border}`,
+        }}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <img
+            src={logo}
+            alt="Belleza en Madera"
+            className="h-10 w-auto object-contain"
+          />
+          <h1
+            className="text-lg font-semibold"
+            style={{ color: COLORS.dark }}
+          >
+            Inicia sesión
+          </h1>
+          <p className="text-xs text-slate-500 text-center">
+            Área privada para agregar productos.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-sm" style={{ color: COLORS.dark }}>
+              Correo
+            </label>
             <input
               type="email"
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              placeholder="duena@bellezaenmadera.mx"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-pink-100"
-              placeholder="duena@figuras.com"
               required
             />
           </div>
-          <div>
-            <label className="text-sm text-slate-700">Contraseña</label>
+
+          <div className="space-y-1">
+            <label className="text-sm" style={{ color: COLORS.dark }}>
+              Contraseña
+            </label>
             <input
               type="password"
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-pink-100"
               required
             />
           </div>
+
           {err && <p className="text-xs text-red-500">{err}</p>}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-900 text-white rounded-md py-2 text-sm font-medium hover:bg-slate-800 disabled:opacity-50"
+            className="w-full py-2 rounded-md text-sm font-medium text-white transition"
+            style={{ backgroundColor: COLORS.accent }}
           >
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
+
+        <p className="text-[10px] text-slate-400 text-center">
+          Si olvidaste tus datos, cámbialos desde Supabase → Auth → Users.
+        </p>
       </div>
     </div>
   );

@@ -9,6 +9,14 @@ import {
   deleteProductFromDb,
   deleteImageFromStorage,
 } from "../lib/productsApi.js";
+import logo from "../assets/Sin_Fondo.png";
+
+const COLORS = {
+  surface: "rgba(255,255,255,0.85)",
+  border: "rgba(252, 231, 218, 1)", // #FCE7DA
+  dark: "#5A3B2E",
+  accent: "#E98A6B",
+};
 
 export default function Admin() {
   const [dbProducts, setDbProducts] = useState([]);
@@ -23,7 +31,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // verificar sesión
+  // comprobar sesión y cargar productos
   useEffect(() => {
     checkSession();
   }, []);
@@ -50,8 +58,11 @@ export default function Admin() {
   function handleFileChange(e) {
     const f = e.target.files?.[0] ?? null;
     setFile(f);
-    if (f) setPreview(URL.createObjectURL(f));
-    else setPreview(null);
+    if (f) {
+      setPreview(URL.createObjectURL(f));
+    } else {
+      setPreview(null);
+    }
   }
 
   function resetForm() {
@@ -73,6 +84,7 @@ export default function Admin() {
 
     try {
       setLoading(true);
+
       let imageUrl = null;
       let imagePath = null;
 
@@ -152,39 +164,58 @@ export default function Admin() {
 
   return (
     <div className="container-main py-10 space-y-8">
-      {/* Header */}
+      {/* header admin */}
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold text-slate-900">
-          Admin de productos
-        </h1>
-        <button
-          onClick={handleLogout}
-          className="text-xs text-slate-500 hover:text-slate-700"
-        >
-          Cerrar sesión
-        </button>
+        <div>
+          <h1
+            className="text-3xl font-bold"
+            style={{ color: COLORS.dark }}
+          >
+            Admin de productos
+          </h1>
+          <p className="text-slate-500 text-sm">
+            Agrega, edita o elimina las figuras de madera.
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <img
+            src={logo}
+            alt="Belleza en Madera"
+            className="h-10 w-auto object-contain opacity-90"
+          />
+          <button
+            onClick={handleLogout}
+            className="text-xs text-slate-500 hover:text-slate-700"
+          >
+            Cerrar sesión
+          </button>
+        </div>
       </div>
 
-      {/* Formulario */}
+      {/* formulario */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white/80 backdrop-blur border border-white/40 rounded-xl p-6 space-y-4 max-w-lg"
+        className="space-y-4 rounded-2xl p-6 max-w-lg"
+        style={{
+          backgroundColor: COLORS.surface,
+          border: `1px solid ${COLORS.border}`,
+        }}
       >
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Nombre del producto
           </label>
           <input
             name="name"
             value={form.name}
             onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
             placeholder="Ej. Colibrí pastel"
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Precio (MXN)
           </label>
           <input
@@ -192,26 +223,26 @@ export default function Admin() {
             name="price"
             value={form.price}
             onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
             placeholder="280"
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Categoría
           </label>
           <input
             name="category"
             value={form.category}
             onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm"
-            placeholder="Animales, Flores, Hogar..."
+            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+            placeholder="Navidad, Halloween..."
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Descripción
           </label>
           <textarea
@@ -219,18 +250,19 @@ export default function Admin() {
             value={form.description}
             onChange={handleChange}
             rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
             placeholder="Figura de madera pintada a mano..."
           />
         </div>
 
-        {/* Imagen */}
+        {/* campo de imagen actualizado */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
-            Imagen (opcional)
+          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
+            Imagen
           </label>
+          
           <div className="flex items-center gap-3">
-            <label className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 text-sm rounded-md cursor-pointer hover:bg-slate-50">
+            <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-sm rounded-md cursor-pointer hover:bg-slate-50 transition-all">
               Seleccionar archivo
               <input
                 type="file"
@@ -240,20 +272,20 @@ export default function Admin() {
               />
             </label>
             {file ? (
-              <span className="text-xs text-slate-500">{file.name}</span>
+              <span className="text-xs text-slate-500 truncate max-w-[140px]">
+                {file.name}
+              </span>
             ) : preview ? (
               <span className="text-xs text-slate-500">Imagen actual</span>
             ) : (
-              <span className="text-xs text-slate-400">
-                No se ha seleccionado imagen
-              </span>
+              <span className="text-xs text-slate-400">Ninguna imagen</span>
             )}
           </div>
           {preview && (
             <img
               src={preview}
               alt="preview"
-              className="h-20 w-20 object-cover rounded-md border"
+              className="h-20 w-20 object-cover rounded-md border border-[#FCE7DA]"
             />
           )}
         </div>
@@ -261,7 +293,8 @@ export default function Admin() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition disabled:opacity-50"
+          className="px-4 py-2 rounded-md text-sm font-medium text-white transition disabled:opacity-50"
+          style={{ backgroundColor: COLORS.accent }}
         >
           {loading
             ? "Guardando..."
@@ -280,21 +313,25 @@ export default function Admin() {
         )}
       </form>
 
-      {/* Lista */}
+      {/* lista de productos */}
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">
-          Productos en la base
+        <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
+          Productos en Supabase
         </h2>
         {dbProducts.length === 0 ? (
           <p className="text-sm text-slate-500">
-            Aún no hay productos en Supabase.
+            Aún no hay productos. Agrega uno arriba ✨
           </p>
         ) : (
           <ul className="grid gap-3 md:grid-cols-2">
             {dbProducts.map((p) => (
               <li
                 key={p.id}
-                className="bg-white/80 border border-white/50 rounded-lg p-4 flex gap-4"
+                className="flex gap-4 rounded-xl p-4"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.55)",
+                  border: "1px solid rgba(252, 231, 218, 0.5)",
+                }}
               >
                 {p.image_url ? (
                   <img
@@ -308,7 +345,10 @@ export default function Admin() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 truncate">
+                  <p
+                    className="text-sm font-semibold truncate"
+                    style={{ color: COLORS.dark }}
+                  >
                     {p.name}
                   </p>
                   <p className="text-xs text-slate-500">
@@ -317,7 +357,8 @@ export default function Admin() {
                   <div className="flex gap-2 mt-2">
                     <button
                       onClick={() => handleEdit(p)}
-                      className="text-xs px-2 py-1 rounded bg-slate-900 text-white hover:bg-slate-800"
+                      className="text-xs px-2 py-1 rounded text-white"
+                      style={{ backgroundColor: COLORS.dark }}
                     >
                       Editar
                     </button>

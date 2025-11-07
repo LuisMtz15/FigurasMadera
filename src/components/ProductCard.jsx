@@ -3,36 +3,59 @@ import { SITE_CONFIG } from "../config/site.js";
 
 export default function ProductCard({ product }) {
   const message = encodeURIComponent(
-    `Hola, vi la figura "${product.name}" en la página y quiero más información. Precio: $${product.price} MXN`
+    `Hola 👋, vi la figura "${product.name}" en Belleza en Madera y quiero más información.`
   );
-
-  const waLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${message}`;
+  const link = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${message}`;
 
   return (
-    <div className="bg-white/80 backdrop-blur rounded-xl border border-white/40 shadow-sm hover:shadow-md transition flex flex-col">
-      <div className="h-40 bg-linear-to-br from-pink-100 via-white to-indigo-50 rounded-t-xl flex items-center justify-center text-5xl">
-        🪵
+    <div
+      className="rounded-xl border p-4 flex flex-col justify-between transition hover:shadow-md"
+      style={{
+        backgroundColor: "#FDF5F0",
+        borderColor: "#FCE7DA",
+      }}
+    >
+      {/* Imagen */}
+      <div className="aspect-square rounded-lg overflow-hidden mb-3 bg-white/40">
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-5xl">
+            🪵
+          </div>
+        )}
       </div>
-      <div className="p-4 flex-1 flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-3">
-          <h2 className="text-base font-semibold text-slate-900 leading-tight">
+
+      {/* Info */}
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <h3
+            className="text-lg font-semibold truncate"
+            style={{ color: "#5A3B2E" }}
+          >
             {product.name}
-          </h2>
-          {product.category ? (
-            <span className="text-[10px] uppercase tracking-wide bg-pink-100 text-slate-800 px-2 py-1 rounded-full">
-              {product.category}
-            </span>
-          ) : null}
+          </h3>
+          <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+            {product.description || "Figura de madera pintada a mano."}
+          </p>
         </div>
-        <p className="text-sm text-slate-500 flex-1">{product.description}</p>
-        <p className="text-lg font-semibold text-slate-900">
-          ${product.price} MXN
-        </p>
+        <div className="mt-2">
+          <p className="text-sm font-medium" style={{ color: "#5A3B2E" }}>
+            {product.price ? `$${product.price} MXN` : ""}
+          </p>
+        </div>
+
+        {/* Botón */}
         <a
-          href={waLink}
+          href={link}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 inline-flex items-center justify-center gap-2 bg-slate-900 text-white text-sm font-medium py-2 rounded-md hover:bg-slate-800 transition"
+          className="mt-4 w-full text-center text-sm font-medium py-2 rounded-md text-white"
+          style={{ backgroundColor: "#E98A6B" }}
         >
           Pedir por WhatsApp
         </a>
