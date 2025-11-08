@@ -445,7 +445,7 @@ export default function Admin() {
       {/* lista de productos */}
       <div className="space-y-3">
         <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
-          Productos en Supabase
+          Productos en registrados
         </h2>
         {dbProducts.length === 0 ? (
           <p className="text-sm text-slate-500">
