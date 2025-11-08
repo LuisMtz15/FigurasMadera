@@ -23,7 +23,7 @@ export default function Contact() {
           </h1>
           <p className="text-slate-600">
             Dinos qué pieza te gustó o qué te gustaría que pintáramos. Te
-            contestamos por WhatsApp.
+            contestamos por correo o WhatsApp.
           </p>
         </div>
 
@@ -35,27 +35,38 @@ export default function Contact() {
             border: `1px solid ${COLORS.border}`,
           }}
         >
-          <p
-            className="text-sm font-medium"
-            style={{ color: COLORS.dark }}
-          >
+          <p className="text-sm font-medium" style={{ color: COLORS.dark }}>
             Envíanos tus datos 💛
           </p>
 
+          {/* FORMULARIO NETLIFY */}
           <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
             className="space-y-4"
-            onSubmit={(e) => e.preventDefault()}
           >
+            {/* obligatorio para Netlify */}
+            <input type="hidden" name="form-name" value="contact" />
+            {/* honeypot (bot) */}
+            <p className="hidden">
+              <label>
+                No llenar: <input name="bot-field" />
+              </label>
+            </p>
+
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-1">
                 <label className="text-sm" style={{ color: COLORS.dark }}>
                   Nombre completo
                 </label>
                 <input
-                    type="text"
-                    className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                    placeholder="Ej. Mariela Gómez"
-                    required
+                  type="text"
+                  name="name"
+                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+                  placeholder="Ej. Mariela Gómez"
+                  required
                 />
               </div>
               <div className="space-y-1">
@@ -63,10 +74,11 @@ export default function Contact() {
                   Correo
                 </label>
                 <input
-                    type="email"
-                    className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                    placeholder="tu@correo.com"
-                    required
+                  type="email"
+                  name="email"
+                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+                  placeholder="tu@correo.com"
+                  required
                 />
               </div>
             </div>
@@ -78,6 +90,7 @@ export default function Contact() {
                 </label>
                 <input
                   type="tel"
+                  name="phone"
                   className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
                   placeholder="+52 ..."
                 />
@@ -88,6 +101,7 @@ export default function Contact() {
                 </label>
                 <input
                   type="text"
+                  name="subject"
                   className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
                   placeholder="Figura que vi / Pedido / Info"
                 />
@@ -100,6 +114,7 @@ export default function Contact() {
               </label>
               <textarea
                 rows={4}
+                name="message"
                 className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
                 placeholder="Quiero una figura personalizada de..., vi una flor pastel y quiero precio..."
                 required
@@ -111,11 +126,11 @@ export default function Contact() {
               className="w-full py-2 rounded-md text-sm font-medium text-white"
               style={{ backgroundColor: COLORS.accent }}
             >
-              Enviar (solo demostración)
+              Enviar
             </button>
 
             <p className="text-[10px] text-slate-400">
-              Este formulario es de prueba. Usa el botón de abajo para escribirnos directo.
+              Este formulario lo recibe Netlify Forms. Después lo conectamos a tu correo.
             </p>
           </form>
         </div>
