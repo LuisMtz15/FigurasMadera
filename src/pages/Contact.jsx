@@ -93,6 +93,7 @@ export default function Contact() {
             data-netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="space-y-4"
+            netlify
           >
             {/* esto hace que Netlify detecte el form en el build */}
             <input type="hidden" name="form-name" value="contact" />
