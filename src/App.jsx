@@ -8,6 +8,7 @@ import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Admin from "./pages/Admin.jsx";
 import Login from "./pages/Login.jsx";
+import ContactSuccess from "./pages/ContactSuccess.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {

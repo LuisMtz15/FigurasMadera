@@ -1,3 +1,4 @@
+// src/pages/ContactSuccess.jsx
 export default function ContactSuccess() {
   return (
     <div
@@ -11,7 +12,7 @@ export default function ContactSuccess() {
           ¡Gracias por tu mensaje! 💛
         </h1>
         <p className="text-slate-600 mb-6">
-          Lo recibimos correctamente y te responderemos lo antes posible.
+          Lo recibimos y te vamos a responder lo antes posible.
         </p>
         <a
           href="/"
