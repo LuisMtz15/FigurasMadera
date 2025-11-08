@@ -1,14 +1,16 @@
 // src/pages/Contact.jsx
 import { SITE_CONFIG } from "../config/site.js";
+import { useNavigate } from "react-router-dom";
 
 const COLORS = {
   surface: "rgba(255,255,255,0.8)",
-  border: "rgba(252, 231, 218, 0.7)", // #FCE7DA
+  border: "rgba(252, 231, 218, 0.7)",
   dark: "#5A3B2E",
   accent: "#E98A6B",
 };
 
 export default function Contact() {
+  const navigate = useNavigate();
   const whatsappLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
     "Hola 👋, vi la página Belleza en Madera y quiero más información."
   )}`;
@@ -16,7 +18,6 @@ export default function Contact() {
   return (
     <div className="py-12">
       <div className="container-main max-w-3xl space-y-8">
-        {/* encabezado centrado */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold" style={{ color: COLORS.dark }}>
             Contáctanos
@@ -27,7 +28,6 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* card del formulario */}
         <div
           className="rounded-2xl p-6 md:p-7 space-y-4"
           style={{
@@ -39,17 +39,19 @@ export default function Contact() {
             Envíanos tus datos 💛
           </p>
 
-          {/* FORMULARIO NETLIFY */}
           <form
             name="contact"
             method="POST"
+            action="/contact-success"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
             className="space-y-4"
+            onSubmit={() => {
+              // redirigir dentro de React después del submit
+              setTimeout(() => navigate("/contact-success"), 100);
+            }}
           >
-            {/* obligatorio para Netlify */}
             <input type="hidden" name="form-name" value="contact" />
-            {/* honeypot (bot) */}
             <p className="hidden">
               <label>
                 No llenar: <input name="bot-field" />
@@ -126,12 +128,8 @@ export default function Contact() {
               className="w-full py-2 rounded-md text-sm font-medium text-white"
               style={{ backgroundColor: COLORS.accent }}
             >
-              Enviar
+              Enviar mensaje
             </button>
-
-            <p className="text-[10px] text-slate-400">
-              Este formulario lo recibe Netlify Forms. Después lo conectamos a tu correo.
-            </p>
           </form>
         </div>
 
