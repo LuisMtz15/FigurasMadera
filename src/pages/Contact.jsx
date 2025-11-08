@@ -1,5 +1,7 @@
 // src/pages/Contact.jsx
 import { SITE_CONFIG } from "../config/site.js";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const COLORS = {
   surface: "rgba(255,255,255,0.8)",
@@ -9,9 +11,54 @@ const COLORS = {
 };
 
 export default function Contact() {
+  const navigate = useNavigate();
+  const [sending, setSending] = useState(false);
+
   const whatsappLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
     "Hola 👋, vi la página Belleza en Madera y quiero más información."
   )}`;
+
+  // helper para mandar a Netlify
+  function encode(data) {
+    return Object.keys(data)
+      .map(
+        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+      )
+      .join("&");
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSending(true);
+
+    const form = e.target;
+
+    const formData = {
+      "form-name": "contact",
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      subject: form.subject.value,
+      message: form.message.value,
+    };
+
+    try {
+      // Netlify recibe los forms en la raíz (/) por defecto
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode(formData),
+      });
+
+      // cuando ya lo recibió Netlify, ahora sí navegamos dentro de React
+      navigate("/contact-success");
+    } catch (err) {
+      console.error("Error enviando formulario:", err);
+      alert("No se pudo enviar, inténtalo de nuevo.");
+    } finally {
+      setSending(false);
+    }
+  }
 
   return (
     <div className="py-12">
@@ -39,16 +86,15 @@ export default function Contact() {
             Envíanos tus datos 💛
           </p>
 
-          {/* FORMULARIO NETLIFY */}
+          {/* FORMULARIO NETLIFY pero enviado por JS */}
           <form
             name="contact"
-            method="POST"
-            action="/contact-success"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
+            onSubmit={handleSubmit}
             className="space-y-4"
           >
-            {/* obligatorio */}
+            {/* esto hace que Netlify detecte el form en el build */}
             <input type="hidden" name="form-name" value="contact" />
             {/* honeypot */}
             <p className="hidden">
@@ -124,10 +170,11 @@ export default function Contact() {
 
             <button
               type="submit"
-              className="w-full py-2 rounded-md text-sm font-medium text-white"
+              disabled={sending}
+              className="w-full py-2 rounded-md text-sm font-medium text-white disabled:opacity-60"
               style={{ backgroundColor: COLORS.accent }}
             >
-              Enviar mensaje
+              {sending ? "Enviando..." : "Enviar mensaje"}
             </button>
           </form>
         </div>
