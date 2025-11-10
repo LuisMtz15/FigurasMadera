@@ -18,7 +18,7 @@ export default function Contact() {
     "Hola 👋, vi la página Belleza en Madera y quiero más información."
   )}`;
 
-  // helper para mandar a Netlify
+  // Helper para enviar datos en formato form-urlencoded
   function encode(data) {
     return Object.keys(data)
       .map(
@@ -38,8 +38,8 @@ export default function Contact() {
       name: form.name.value,
       email: form.email.value,
       phone: form.phone.value,
-      subject: "Formulario Belleza en Madera",
-      topic: form.topic.value,
+      subject: "Formulario Belleza en Madera", // fijo
+      topic: form.topic.value, // lo que escribió el usuario en "Asunto / Tema"
       message: form.message.value,
     };
 
@@ -69,11 +69,11 @@ export default function Contact() {
           </h1>
           <p className="text-slate-600">
             Dinos qué pieza te gustó o qué te gustaría que pintáramos. Te
-            contestamos por WhatsApp.
+            contestamos por correo o WhatsApp.
           </p>
         </div>
 
-        {/* card */}
+        {/* card del formulario */}
         <div
           className="rounded-2xl p-6 md:p-7 space-y-4"
           style={{
@@ -85,7 +85,6 @@ export default function Contact() {
             Envíanos tus datos 💛
           </p>
 
-          {/* FORMULARIO NETLIFY pero enviado por JS */}
           <form
             name="contact"
             data-netlify="true"
@@ -93,21 +92,22 @@ export default function Contact() {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
-            {/* esto hace que Netlify detecte el form en el build */}
+            {/* Campo oculto que identifica el formulario */}
             <input type="hidden" name="form-name" value="contact" />
-            {/* este es el subject fijo que queremos que use Netlify */}
             <input
               type="hidden"
               name="subject"
               value="Formulario Belleza en Madera"
             />
-            {/* honeypot */}
+
+            {/* Honeypot (para bots) */}
             <p className="hidden">
               <label>
                 No llenar: <input name="bot-field" />
               </label>
             </p>
 
+            {/* Campos */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-1">
                 <label className="text-sm" style={{ color: COLORS.dark }}>
@@ -153,7 +153,7 @@ export default function Contact() {
                 </label>
                 <input
                   type="text"
-                  name="topic" // 👈 ya no subject
+                  name="topic" // 👈 ya no "subject"
                   className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
                   placeholder="Figura que vi / Pedido / Info"
                 />
@@ -184,7 +184,7 @@ export default function Contact() {
           </form>
         </div>
 
-        {/* whatsapp */}
+        {/* bloque de whatsapp */}
         <div className="text-center space-y-3">
           <p className="text-sm text-slate-600">¿Lo quieres resolver rapidito?</p>
           <a

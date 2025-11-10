@@ -7,14 +7,14 @@
     <title>Belleza en Madera</title>
   </head>
   <body>
-    <!-- Form oculto para que Netlify detecte todos los campos que usamos en React -->
+    <!-- Formulario oculto para que Netlify lo detecte -->
     <form name="contact" netlify netlify-honeypot="bot-field" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />
-      <!-- subject fijo para el correo -->
+      <!-- Asunto fijo para Netlify -->
       <input type="hidden" name="subject" value="Formulario Belleza en Madera" />
-      <!-- campo que el usuario llena como tema -->
+      <!-- Campo visible del usuario -->
       <input type="text" name="topic" />
       <textarea name="message"></textarea>
     </form>
