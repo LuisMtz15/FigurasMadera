@@ -10,6 +10,7 @@ import Admin from "./pages/Admin.jsx";
 import Login from "./pages/Login.jsx";
 import ContactSuccess from "./pages/ContactSuccess.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
         background: `linear-gradient(180deg, #FEFAF7 0%, #FCEFE7 100%)`,
       }}
     >
+      <ScrollToTop />
+
       <Navbar />
       <main className="flex-1">
         <Routes>
