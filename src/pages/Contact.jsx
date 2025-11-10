@@ -38,19 +38,18 @@ export default function Contact() {
       name: form.name.value,
       email: form.email.value,
       phone: form.phone.value,
-      subject: form.subject.value,
+      subject: "Formulario Belleza en Madera",
+      topic: form.topic.value,
       message: form.message.value,
     };
 
     try {
-      // Netlify recibe los forms en la raíz (/) por defecto
       await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode(formData),
       });
 
-      // cuando ya lo recibió Netlify, ahora sí navegamos dentro de React
       navigate("/contact-success");
     } catch (err) {
       console.error("Error enviando formulario:", err);
@@ -70,7 +69,7 @@ export default function Contact() {
           </h1>
           <p className="text-slate-600">
             Dinos qué pieza te gustó o qué te gustaría que pintáramos. Te
-            contestamos por correo o WhatsApp.
+            contestamos por WhatsApp.
           </p>
         </div>
 
@@ -93,10 +92,15 @@ export default function Contact() {
             data-netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="space-y-4"
-            netlify
           >
             {/* esto hace que Netlify detecte el form en el build */}
             <input type="hidden" name="form-name" value="contact" />
+            {/* este es el subject fijo que queremos que use Netlify */}
+            <input
+              type="hidden"
+              name="subject"
+              value="Formulario Belleza en Madera"
+            />
             {/* honeypot */}
             <p className="hidden">
               <label>
@@ -145,11 +149,11 @@ export default function Contact() {
               </div>
               <div className="space-y-1">
                 <label className="text-sm" style={{ color: COLORS.dark }}>
-                  Asunto
+                  Asunto / Tema
                 </label>
                 <input
                   type="text"
-                  name="subject"
+                  name="topic" // 👈 ya no subject
                   className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
                   placeholder="Figura que vi / Pedido / Info"
                 />
