@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchProducts } from "../lib/productsApi.js";
+import { fetchPackages } from "../lib/packagesApi.js";
+import { SITE_CONFIG } from "../config/site.js";
 import heroImg from "../assets/Sin_Fondo.png";
 
 const COLORS = {
@@ -13,13 +15,21 @@ const COLORS = {
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
+  const [packagesList, setPackagesList] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const data = await fetchProducts();
-      setFeatured(data.slice(0, 3));
+      const [products, packages] = await Promise.all([
+        fetchProducts(),
+        fetchPackages(),
+      ]);
+
+      setAllProducts(products);
+      setFeatured(products.slice(0, 3));
+      setPackagesList(packages.slice(0, 2));
       setLoading(false);
     })();
   }, []);
@@ -80,7 +90,7 @@ export default function Home() {
       </section>
 
       {/* DESTACADOS */}
-      <section className="container-main pb-14 space-y-5">
+      <section className="container-main pb-10 space-y-5">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2
@@ -117,7 +127,6 @@ export default function Home() {
                   key={p.id}
                   className="bg-white/70 border border-white/40 rounded-xl p-4 flex flex-col"
                 >
-                  {/* AQUÍ CAMBIAMOS LA IMAGEN */}
                   <div className="rounded-lg overflow-hidden mb-3 bg-[#FDF5F0] flex items-center justify-center h-48">
                     {p.image_url ? (
                       <img
@@ -177,6 +186,130 @@ export default function Home() {
                     </Link>
                   </div>
                 </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* PAQUETES LISTOS */}
+      <section className="container-main pb-14 space-y-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2
+              className="text-2xl font-semibold flex items-center gap-1"
+              style={{ color: COLORS.dark }}
+            >
+              Paquetes listos 🎁
+            </h2>
+            <p className="text-slate-500 text-sm">
+              Combos armados con varias figuras.
+            </p>
+          </div>
+          <Link
+            to="/productos"
+            className="text-sm text-[#5A3B2E] hover:text-[#E98A6B]"
+          >
+            Ver catálogo →
+          </Link>
+        </div>
+
+        {packagesList.length === 0 ? (
+          <p className="text-sm text-slate-500">
+            Aún no hay paquetes, crea uno en el admin.
+          </p>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2">
+            {packagesList.map((pkg) => {
+              const pkgProducts = allProducts.filter((p) =>
+                (pkg.product_ids || []).includes(p.id)
+              );
+
+              const waMsg = encodeURIComponent(
+                `Hola 👋, vi el paquete "${pkg.name}" en Belleza en Madera y quiero más información.`
+              );
+              const waLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${waMsg}`;
+
+              return (
+                <div
+                  key={pkg.id}
+                  className="bg-white/70 border border-white/40 rounded-xl p-4 flex gap-3"
+                >
+                  {/* collage 2x2 corregido */}
+                  <div className="w-24 h-24 rounded-2xl bg-white/90 border border-[#FCE7DA] p-1 grid grid-cols-2 gap-1 shrink-0 self-center overflow-hidden">
+                    {pkgProducts.slice(0, 4).map((p) => (
+                      <div
+                        key={p.id}
+                        className="w-full h-full flex items-center justify-center bg-[#FFF8F5] rounded-md"
+                      >
+                        {p.image_url ? (
+                          <img
+                            src={p.image_url}
+                            alt={p.name}
+                            className="max-w-full max-h-full object-contain rounded-md"
+                          />
+                        ) : (
+                          <span className="text-lg">🪵</span>
+                        )}
+                      </div>
+                    ))}
+
+                    {pkgProducts.length === 0 && (
+                      <div className="col-span-2 flex items-center justify-center text-xl">
+                        🎁
+                      </div>
+                    )}
+                    {pkgProducts.length > 4 && (
+                      <div className="w-full h-full rounded-md bg-slate-100 flex items-center justify-center text-[10px] text-slate-500">
+                        +{pkgProducts.length - 4}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* info */}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <p
+                      className="text-base font-semibold truncate"
+                      style={{ color: COLORS.dark }}
+                    >
+                      {pkg.name}
+                    </p>
+
+                    {pkg.promo && pkg.promo_price ? (
+                      <p className="text-sm">
+                        <span className="line-through text-slate-300 mr-1">
+                          ${pkg.price}
+                        </span>
+                        <span className="text-red-500 font-semibold">
+                          ${pkg.promo_price}
+                        </span>
+                      </p>
+                    ) : (
+                      <p className="text-sm text-slate-700">${pkg.price}</p>
+                    )}
+
+                    <p className="text-[11px] text-slate-400">
+                      Incluye {pkgProducts.length} figura
+                      {pkgProducts.length === 1 ? "" : "s"}
+                    </p>
+
+                    {pkg.description ? (
+                      <p className="text-xs text-slate-500 line-clamp-2">
+                        {pkg.description}
+                      </p>
+                    ) : null}
+
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex mt-1 px-3 py-1.5 rounded-md text-xs font-medium text-white"
+                      style={{ backgroundColor: COLORS.accent }}
+                    >
+                      Pedir este paquete
+                    </a>
+                  </div>
+                </div>
               );
             })}
           </div>

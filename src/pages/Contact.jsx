@@ -35,10 +35,10 @@ export default function Contact() {
 
     const formData = {
       "form-name": "contact",
+      subject: "Formulario Belleza en Madera", // fijo
       name: form.name.value,
       email: form.email.value,
       phone: form.phone.value,
-      subject: "Formulario Belleza en Madera", // fijo
       topic: form.topic.value, // lo que escribió el usuario en "Asunto / Tema"
       message: form.message.value,
     };

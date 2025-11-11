@@ -1,7 +1,10 @@
 // src/pages/Products.jsx
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard.jsx";
+import PackageCard from "../components/PackageCard.jsx";
 import { fetchProducts } from "../lib/productsApi.js";
+import { fetchPackages } from "../lib/packagesApi.js";
+import { SITE_CONFIG } from "../config/site.js"; // si ya no lo usas aquí puedes quitarlo
 
 const CATEGORY_INFO = {
   Halloween: { label: "Halloween", emoji: "🎃", desc: "Decoración pintada a mano para octubre." },
@@ -14,8 +17,11 @@ const CATEGORY_INFO = {
 
 export default function Products() {
   const [allProducts, setAllProducts] = useState([]);
+  const [allPackages, setAllPackages] = useState([]);
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [activeTab, setActiveTab] = useState("productos");
   const [loading, setLoading] = useState(true);
+  const [loadingPkgs, setLoadingPkgs] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -23,6 +29,15 @@ export default function Products() {
       const data = await fetchProducts();
       setAllProducts(data);
       setLoading(false);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      setLoadingPkgs(true);
+      const data = await fetchPackages();
+      setAllPackages(data);
+      setLoadingPkgs(false);
     })();
   }, []);
 
@@ -53,109 +68,166 @@ export default function Products() {
 
   return (
     <div className="container-main py-12 space-y-8">
+      {/* encabezado */}
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold" style={{ color: "#5A3B2E" }}>
-          Nuestros productos
+          Catálogo
         </h1>
         <p className="text-slate-600">
-          Filtra por temporada o por evento especial.
+          Figuras individuales y paquetes armados.
         </p>
       </div>
 
-      {/* móvil: select bonito y dinámico */}
-      <div className="sm:hidden">
-        <label className="block text-sm mb-2 text-[#5A3B2E] font-medium">
-          Filtrar por categoría
-        </label>
-        <div className="relative">
-          <select
-            value={activeCategory}
-            onChange={(e) => setActiveCategory(e.target.value)}
-            className={`w-full appearance-none rounded-xl border px-3 py-2.5 text-sm pr-9 focus:outline-none focus:ring-2 transition-colors ${
-              activeCategory === "Todos"
-                ? "bg-[#FEFAF7] border-[#FCE7DA] text-[#5A3B2E] focus:ring-[#FCE7DA]"
-                : "bg-[#E98A6B] text-white border-[#E98A6B] focus:ring-[#E98A6B]"
-            }`}
-          >
-            <option value="Todos">Todos</option>
+      {/* pestañas */}
+      <div className="flex gap-3 bg-white/50 rounded-full p-1 w-fit">
+        <button
+          onClick={() => setActiveTab("productos")}
+          className={`px-4 py-1.5 rounded-full text-sm transition ${
+            activeTab === "productos"
+              ? "bg-[#E98A6B] text-white"
+              : "text-[#5A3B2E]"
+          }`}
+        >
+          Productos
+        </button>
+        <button
+          onClick={() => setActiveTab("paquetes")}
+          className={`px-4 py-1.5 rounded-full text-sm transition ${
+            activeTab === "paquetes"
+              ? "bg-[#E98A6B] text-white"
+              : "text-[#5A3B2E]"
+          }`}
+        >
+          Paquetes
+        </button>
+      </div>
+
+      {activeTab === "productos" ? (
+        <>
+          {/* móvil: select */}
+          <div className="sm:hidden">
+            <label className="block text-sm mb-2 text-[#5A3B2E] font-medium">
+              Filtrar por categoría
+            </label>
+            <div className="relative">
+              <select
+                value={activeCategory}
+                onChange={(e) => setActiveCategory(e.target.value)}
+                className={`w-full appearance-none rounded-xl border px-3 py-2.5 text-sm pr-9 focus:outline-none focus:ring-2 transition-colors ${
+                  activeCategory === "Todos"
+                    ? "bg-[#FEFAF7] border-[#FCE7DA] text-[#5A3B2E] focus:ring-[#FCE7DA]"
+                    : "bg-[#E98A6B] text-white border-[#E98A6B] focus:ring-[#E98A6B]"
+                }`}
+              >
+                <option value="Todos">Todos</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {CATEGORY_INFO[cat]?.emoji ? CATEGORY_INFO[cat].emoji + " " : ""}
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              <span
+                className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm transition ${
+                  activeCategory === "Todos"
+                    ? "text-[#5A3B2E]/60"
+                    : "text-white/90"
+                }`}
+              >
+                ▼
+              </span>
+            </div>
+          </div>
+
+          {/* desktop / tablet: botones */}
+          <div className="hidden sm:flex sm:flex-wrap sm:gap-3">
+            <button
+              onClick={() => setActiveCategory("Todos")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
+                activeCategory === "Todos"
+                  ? "text-[#5A3B2E] bg-transparent hover:bg-[#FCE7DA]"
+                  : "text-white"
+              }`}
+              style={{
+                backgroundColor:
+                  activeCategory === "Todos" ? "transparent" : "#E98A6B",
+              }}
+            >
+              Todos
+            </button>
+
             {categories.map((cat) => (
-              <option key={cat} value={cat}>
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
+                  activeCategory === cat
+                    ? "text-white"
+                    : "text-[#5A3B2E] hover:bg-[#FCE7DA]"
+                }`}
+                style={{
+                  backgroundColor:
+                    activeCategory === cat ? "#E98A6B" : "transparent",
+                }}
+              >
                 {CATEGORY_INFO[cat]?.emoji ? CATEGORY_INFO[cat].emoji + " " : ""}
                 {cat}
-              </option>
+              </button>
             ))}
-          </select>
-          <span
-            className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm transition ${
-              activeCategory === "Todos"
-                ? "text-[#5A3B2E]/60"
-                : "text-white/90"
-            }`}
-          >
-            ▼
-          </span>
-        </div>
-      </div>
+          </div>
 
-      {/* desktop / tablet: botones */}
-      <div className="hidden sm:flex sm:flex-wrap sm:gap-3">
-        <button
-          onClick={() => setActiveCategory("Todos")}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
-            activeCategory === "Todos"
-              ? "text-[#5A3B2E] bg-transparent hover:bg-[#FCE7DA]"
-              : "text-white"
-          }`}
-          style={{
-            backgroundColor:
-              activeCategory === "Todos" ? "transparent" : "#E98A6B",
-          }}
-        >
-          Todos
-        </button>
+          {/* descripción de categoría */}
+          {categoryInfo && (
+            <div className="rounded-xl px-4 py-3 bg-white/70 border border-white/40 max-w-2xl">
+              <p className="text-sm font-semibold" style={{ color: "#5A3B2E" }}>
+                {categoryInfo.emoji} {categoryInfo.label}
+              </p>
+              <p className="text-xs text-slate-500">{categoryInfo.desc}</p>
+            </div>
+          )}
 
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
-              activeCategory === cat
-                ? "text-white"
-                : "text-[#5A3B2E] hover:bg-[#FCE7DA]"
-            }`}
-            style={{
-              backgroundColor: activeCategory === cat ? "#E98A6B" : "transparent",
-            }}
-          >
-            {CATEGORY_INFO[cat]?.emoji ? CATEGORY_INFO[cat].emoji + " " : ""}
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* descripción de categoría */}
-      {categoryInfo && (
-        <div className="rounded-xl px-4 py-3 bg-white/70 border border-white/40 max-w-2xl">
-          <p className="text-sm font-semibold" style={{ color: "#5A3B2E" }}>
-            {categoryInfo.emoji} {categoryInfo.label}
-          </p>
-          <p className="text-xs text-slate-500">{categoryInfo.desc}</p>
-        </div>
-      )}
-
-      {/* grid de productos */}
-      {loading ? (
-        <p className="text-slate-500 text-sm">Cargando productos...</p>
-      ) : filtered.length === 0 ? (
-        <div className="text-slate-500 text-sm bg-white/50 rounded-lg p-6">
-          No hay productos en esta categoría todavía. Agrega uno desde Admin ✨
-        </div>
+          {/* grid de productos */}
+          {loading ? (
+            <p className="text-slate-500 text-sm">Cargando productos...</p>
+          ) : filtered.length === 0 ? (
+            <div className="text-slate-500 text-sm bg-white/50 rounded-lg p-6">
+              No hay productos en esta categoría todavía. Agrega uno desde Admin ✨
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        // ====== TAB PAQUETES ======
+        <>
+          {loadingPkgs ? (
+            <p className="text-slate-500 text-sm">Cargando paquetes...</p>
+          ) : allPackages.length === 0 ? (
+            <p className="text-sm text-slate-400">
+              Aún no hay paquetes. Agrégalos en Admin.
+            </p>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {allPackages.map((pkg) => {
+                // productos reales de este paquete
+                const pkgProducts = allProducts.filter((p) =>
+                  (pkg.product_ids || []).includes(p.id)
+                );
+                return (
+                  <PackageCard
+                    key={pkg.id}
+                    pkg={pkg}
+                    products={pkgProducts}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
