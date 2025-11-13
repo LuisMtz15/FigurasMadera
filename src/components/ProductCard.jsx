@@ -22,7 +22,7 @@ export default function ProductCard({ product }) {
   }, [open]);
 
   const message = encodeURIComponent(
-    `Hola 👋, vi la figura "${product.name}" en Belleza en Madera y quiero más información.`
+    `Hola 👋, me interesa adquirir la figura "${product.name}"`
   );
   const link = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${message}`;
 

@@ -10,7 +10,7 @@ export default function PackageCard({ pkg, products }) {
     : "No tengo el detalle de las figuras 😅";
 
   const message = encodeURIComponent(
-    `Hola 👋, vi el paquete "${pkg.name}" en Belleza en Madera y quiero más información.\n` +
+    `Hola 👋, me interesa adquirir el paquete "${pkg.name}" \n` +
       (priceIsPromo
         ? `Precio promo: $${pkg.promo_price} (antes $${pkg.price})\n`
         : `Precio: $${pkg.price}\n`) +

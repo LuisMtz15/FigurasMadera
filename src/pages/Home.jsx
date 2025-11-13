@@ -122,6 +122,12 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-3">
             {featured.map((p) => {
               const onSale = p.on_sale && p.sale_price;
+
+              const waMsg = encodeURIComponent(
+                `Hola 👋, me interesa adquirir la figura "${p.name}"`
+              );
+              const waLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${waMsg}`;
+
               return (
                 <article
                   key={p.id}
@@ -178,12 +184,14 @@ export default function Home() {
                       </p>
                     )}
 
-                    <Link
-                      to="/contacto"
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noreferrer"
                       className="text-xs px-3 py-1 rounded-md bg-[#E98A6B] text-white"
                     >
-                      Pedir
-                    </Link>
+                      Pedir por WhatsApp
+                    </a>
                   </div>
                 </article>
               );
@@ -225,8 +233,20 @@ export default function Home() {
                 (pkg.product_ids || []).includes(p.id)
               );
 
+              // 🔽 Igual que PackageCard: texto de figuras + precio
+              const hasProducts = pkgProducts && pkgProducts.length > 0;
+              const priceIsPromo = pkg.promo && pkg.promo_price;
+
+              const productsText = hasProducts
+                ? pkgProducts.map((p) => `- ${p.name}`).join("\n")
+                : "No tengo el detalle de las figuras 😅";
+
               const waMsg = encodeURIComponent(
-                `Hola 👋, vi el paquete "${pkg.name}" en Belleza en Madera y quiero más información.`
+                `Hola 👋, me interesa adquirir el paquete "${pkg.name}" \n` +
+                  (priceIsPromo
+                    ? `Precio promo: $${pkg.promo_price} (antes $${pkg.price})\n`
+                    : `Precio: $${pkg.price}\n`) +
+                  `\nFiguras incluidas:\n${productsText}`
               );
               const waLink = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${waMsg}`;
 
@@ -235,7 +255,6 @@ export default function Home() {
                   key={pkg.id}
                   className="bg-white/70 border border-white/40 rounded-xl p-4 flex gap-3"
                 >
-                  {/* collage 2x2 corregido */}
                   <div className="w-24 h-24 rounded-2xl bg-white/90 border border-[#FCE7DA] p-1 grid grid-cols-2 gap-1 shrink-0 self-center overflow-hidden">
                     {pkgProducts.slice(0, 4).map((p) => (
                       <div
@@ -266,7 +285,6 @@ export default function Home() {
                     )}
                   </div>
 
-                  {/* info */}
                   <div className="flex-1 min-w-0 space-y-1">
                     <p
                       className="text-base font-semibold truncate"
@@ -275,7 +293,7 @@ export default function Home() {
                       {pkg.name}
                     </p>
 
-                    {pkg.promo && pkg.promo_price ? (
+                    {priceIsPromo ? (
                       <p className="text-sm">
                         <span className="line-through text-slate-300 mr-1">
                           ${pkg.price}
