@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useLocation, Navigate } from "react-router-dom";
+import { THEME } from "../config/theme.js";
 
 export default function ProtectedRoute({ children }) {
   const [checking, setChecking] = useState(true);
@@ -29,7 +30,10 @@ export default function ProtectedRoute({ children }) {
 
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ color: THEME.text }}
+      >
         Cargando...
       </div>
     );

@@ -1,15 +1,7 @@
 // src/pages/About.jsx
 import { motion } from "framer-motion";
 import { SITE_CONFIG } from "../config/site.js";
-
-const COLORS = {
-  bg: "#FEFAF7",
-  surface: "rgba(255,255,255,0.75)",
-  border: "rgba(255,255,255,0.5)",
-  accent: "#E98A6B",
-  dark: "#5A3B2E",
-  tag: "#CBE9D7",
-};
+import { THEME } from "../config/theme.js";
 
 export default function About() {
   return (
@@ -27,20 +19,21 @@ export default function About() {
         >
           <span
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
-            style={{ backgroundColor: COLORS.tag, color: COLORS.dark }}
+            style={{ backgroundColor: THEME.successSoft, color: THEME.textStrong }}
           >
             Sobre nosotras
           </span>
           <h1
             className="text-3xl md:text-4xl font-bold"
-            style={{ color: COLORS.dark }}
+            style={{ color: THEME.textStrong }}
           >
             {SITE_CONFIG.businessName || "Belleza en Madera"}
           </h1>
-          <p className="text-slate-600 max-w-3xl">
-            Somos un pequeño taller de figuras de madera pintadas a mano. Cada pieza
-            la hacemos con calma, cuidando colores pastel y detalles que hagan que
-            tu espacio se sienta más cálido.
+          <p className="max-w-3xl" style={{ color: THEME.text }}>
+            Creamos figuras de madera pintadas a mano pensadas para acompañar
+            celebraciones, regalos y momentos especiales. Cada pieza nace con
+            intención, cuidado y ese toque artesanal que hace que un detalle se
+            vuelva memorable.
           </p>
         </motion.div>
 
@@ -53,22 +46,23 @@ export default function About() {
             transition={{ duration: 0.4, delay: 0.1 }}
             className="rounded-xl p-6 space-y-4"
             style={{
-              backgroundColor: COLORS.surface,
-              border: `1px solid ${COLORS.border}`,
+              backgroundColor: THEME.surface,
+              border: `1px solid ${THEME.border}`,
             }}
           >
-            <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
-              Cómo empezó todo
+            <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
+              Nuestra historia
             </h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Empezamos pintando figuras para decorar la casa y hacer regalitos.
-              A la gente le gustó el estilo y los colores suaves, y comenzaron a
-              pedir más: animales, flores, piezas de temporada.
+            <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+              Todo comenzó con la idea de crear detalles distintos: piezas de
+              madera hechas a mano que pudieran regalarse, decorar un espacio o
+              volver más especial una fecha importante.
             </p>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Así nació este proyecto: un lugar donde mostrar las piezas sin
-              complicaciones, y donde puedas pedir algo personalizado escribiendo
-              directo por WhatsApp.
+            <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+              Con el tiempo llegaron más pedidos, nuevas ideas y encargos
+              personalizados. Así nació este proyecto: un espacio donde puedes
+              descubrir nuestras piezas y pedir algo pensado especialmente para
+              ti o para alguien más.
             </p>
           </motion.div>
 
@@ -79,64 +73,64 @@ export default function About() {
             transition={{ duration: 0.4, delay: 0.15 }}
             className="space-y-4"
           >
-            <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
-              Lo que nos importa
+            <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
+              Lo que nos define
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               <div
                 className="rounded-lg p-4"
                 style={{
-                  backgroundColor: "#FDF5F0",
-                  border: "1px solid #FCE7DA",
+                  backgroundColor: THEME.surfaceSoft,
+                  border: `1px solid ${THEME.border}`,
                 }}
               >
-                <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                  Artesanal
+                <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Hecho a mano
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Piezas hechas a mano, no en serie.
+                <p className="text-xs" style={{ color: THEME.text }}>
+                  Cada figura se trabaja con dedicación, sin procesos en serie.
                 </p>
               </div>
               <div
                 className="rounded-lg p-4"
                 style={{
-                  backgroundColor: "#FDF5F0",
-                  border: "1px solid #FCE7DA",
+                  backgroundColor: THEME.surfaceSoft,
+                  border: `1px solid ${THEME.border}`,
                 }}
               >
-                <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                  Colores pastel
+                <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Diseño con intención
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Para que combinen con casa, oficina o tienda.
+                <p className="text-xs" style={{ color: THEME.text }}>
+                  Buscamos que cada pieza tenga personalidad y presencia.
                 </p>
               </div>
               <div
                 className="rounded-lg p-4"
                 style={{
-                  backgroundColor: "#FDF5F0",
-                  border: "1px solid #FCE7DA",
+                  backgroundColor: THEME.surfaceSoft,
+                  border: `1px solid ${THEME.border}`,
                 }}
               >
-                <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
+                <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
                   Personalización
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Si tienes una idea, la platicamos.
+                <p className="text-xs" style={{ color: THEME.text }}>
+                  Si tienes una idea, la aterrizamos contigo y la hacemos realidad.
                 </p>
               </div>
               <div
                 className="rounded-lg p-4"
                 style={{
-                  backgroundColor: "#FDF5F0",
-                  border: "1px solid #FCE7DA",
+                  backgroundColor: THEME.surfaceSoft,
+                  border: `1px solid ${THEME.border}`,
                 }}
               >
-                <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                  Trato cercano
+                <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Detalles que conectan
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Te atendemos nosotras mismas 💛
+                <p className="text-xs" style={{ color: THEME.text }}>
+                  Nos gusta crear piezas que emocionen, sorprendan y acompañen recuerdos.
                 </p>
               </div>
             </div>
@@ -150,40 +144,36 @@ export default function About() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="space-y-4"
         >
-          <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
-            Nuestro caminito
+          <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
+            Cómo hemos crecido
           </h2>
           <div className="relative pl-6 space-y-5">
-            {/* línea */}
-            <div className="absolute top-1 bottom-1 left-2 w-0.5 bg-[#FCE7DA]" />
-            {/* 1 */}
+            <div className="absolute top-1 bottom-1 left-2 w-0.5" style={{ backgroundColor: THEME.borderStrong }} />
             <div className="relative">
-              <div className="w-3 h-3 rounded-full bg-[#E98A6B] absolute -left-[22px] top-1.5" />
-              <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                1. Las primeras figuras
+              <div className="w-3 h-3 rounded-full absolute -left-[22px] top-1.5" style={{ backgroundColor: THEME.secondary }} />
+              <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                1. Primeras creaciones
               </h3>
-              <p className="text-xs text-slate-500">
-                Empezamos con piezas para la familia y la casa.
+              <p className="text-xs" style={{ color: THEME.text }}>
+                Empezamos creando piezas para regalar y decorar momentos cercanos.
               </p>
             </div>
-            {/* 2 */}
             <div className="relative">
-              <div className="w-3 h-3 rounded-full bg-[#E98A6B] absolute -left-[22px] top-1.5" />
-              <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                2. Más pedidos
+              <div className="w-3 h-3 rounded-full absolute -left-[22px] top-1.5" style={{ backgroundColor: THEME.secondary }} />
+              <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                2. Nuevos encargos
               </h3>
-              <p className="text-xs text-slate-500">
-                Llegaron encargos con colores y formas diferentes.
+              <p className="text-xs" style={{ color: THEME.text }}>
+                Comenzaron a llegar pedidos personalizados para distintas ocasiones.
               </p>
             </div>
-            {/* 3 */}
             <div className="relative">
-              <div className="w-3 h-3 rounded-full bg-[#E98A6B] absolute -left-[22px] top-1.5" />
-              <h3 className="text-sm font-semibold" style={{ color: COLORS.dark }}>
-                3. Página web
+              <div className="w-3 h-3 rounded-full absolute -left-[22px] top-1.5" style={{ backgroundColor: THEME.secondary }} />
+              <h3 className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                3. Nuestra vitrina digital
               </h3>
-              <p className="text-xs text-slate-500">
-                Creamos este sitio para que puedas ver todo sin escribir primero.
+              <p className="text-xs" style={{ color: THEME.text }}>
+                Creamos este sitio para mostrar nuestras piezas de forma clara y cercana.
               </p>
             </div>
           </div>
@@ -196,16 +186,16 @@ export default function About() {
           transition={{ duration: 0.4, delay: 0.25 }}
           className="rounded-xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
           style={{
-            backgroundColor: "rgba(255,255,255,0.8)",
-            border: "1px solid rgba(255,255,255,0.4)",
+            backgroundColor: THEME.surfaceStrong,
+            border: `1px solid ${THEME.border}`,
           }}
         >
           <div>
-            <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
+            <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
               ¿Quieres algo personalizado?
             </h2>
-            <p className="text-sm text-slate-600">
-              Mándanos foto o idea y te decimos si la podemos hacer.
+            <p className="text-sm" style={{ color: THEME.text }}>
+              Cuéntanos tu idea y te ayudamos a convertirla en una pieza especial.
             </p>
           </div>
           <a
@@ -214,8 +204,7 @@ export default function About() {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium text-white"
-            style={{ backgroundColor: COLORS.accent }}
+            className="theme-btn-primary inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium"
           >
             Hablar por WhatsApp
           </a>

@@ -1,5 +1,5 @@
 // src/components/admin/ProductsAdmin.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import {
   fetchProducts,
@@ -9,13 +9,8 @@ import {
   deleteProductFromDb,
   deleteImageFromStorage,
 } from "../../lib/productsApi.js";
-
-const COLORS = {
-  surface: "rgba(255,255,255,0.85)",
-  border: "rgba(252, 231, 218, 1)", // #FCE7DA
-  dark: "#5A3B2E",
-  accent: "#E98A6B",
-};
+import { THEME } from "../../config/theme.js";
+import { PackageSearch, Search } from "lucide-react";
 
 const PRESET_CATEGORIES = [
   "Halloween",
@@ -41,6 +36,7 @@ export default function ProductsAdmin() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -210,36 +206,56 @@ export default function ProductsAdmin() {
     }
   }
 
+  const filteredProducts = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
+    if (!query) return dbProducts;
+
+    return dbProducts.filter((product) => {
+      const name = String(product.name || "").toLowerCase();
+      const category = String(product.category || "").toLowerCase();
+      return name.includes(query) || category.includes(query);
+    });
+  }, [dbProducts, searchTerm]);
+
   return (
-    <>
-      {/* formulario */}
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.2fr)] xl:items-start">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 rounded-2xl p-6 max-w-lg"
+        className="theme-panel space-y-4 rounded-2xl p-6"
         style={{
-          backgroundColor: COLORS.surface,
-          border: `1px solid ${COLORS.border}`,
+          backgroundColor: THEME.surfaceStrong,
+          border: `1px solid ${THEME.borderStrong}`,
+          boxShadow: `0 26px 54px -40px ${THEME.shadowStrong}`,
         }}
       >
+        <div className="space-y-1">
+          <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
+            {editingId ? "Editar producto" : "Nuevo producto"}
+          </h2>
+          <p className="text-sm" style={{ color: THEME.text }}>
+            Completa la información para guardar una pieza en el catálogo.
+          </p>
+        </div>
+
         <div>
-          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
+          <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
             Nombre del producto
           </label>
           <input
             name="name"
             value={form.name}
             onChange={handleChange}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+            className="theme-input text-sm"
             placeholder="Ej. Colibrí pastel"
           />
         </div>
 
-        {/* precio + promo en una sola línea bonita */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end">
           <div className="flex-1">
             <label
               className="text-sm font-medium"
-              style={{ color: COLORS.dark }}
+              style={{ color: THEME.textStrong }}
             >
               Precio (MXN)
             </label>
@@ -248,13 +264,13 @@ export default function ProductsAdmin() {
               name="price"
               value={form.price}
               onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              className="theme-input text-sm"
               placeholder="280"
               min="0"
             />
           </div>
 
-          <label className="inline-flex items-center gap-2 bg-white/70 py-2 rounded-lg cursor-pointer">
+          <label className="inline-flex items-center gap-2 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: THEME.surface }}>
             <input
               type="checkbox"
               name="on_sale"
@@ -262,7 +278,7 @@ export default function ProductsAdmin() {
               onChange={handleChange}
               className="h-4 w-4"
             />
-            <span className="text-sm" style={{ color: COLORS.dark }}>
+            <span className="text-sm" style={{ color: THEME.textStrong }}>
               Promoción
             </span>
           </label>
@@ -272,7 +288,7 @@ export default function ProductsAdmin() {
           <div>
             <label
               className="text-sm font-medium"
-              style={{ color: COLORS.dark }}
+              style={{ color: THEME.textStrong }}
             >
               Precio con descuento (MXN)
             </label>
@@ -281,19 +297,18 @@ export default function ProductsAdmin() {
               name="sale_price"
               value={form.sale_price}
               onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              className="theme-input text-sm"
               placeholder="250"
               min="0"
             />
-            <p className="text-[10px] text-slate-400 mt-1">
+            <p className="text-[10px] mt-1" style={{ color: THEME.textSoft }}>
               Debe ser menor que el precio normal.
             </p>
           </div>
         )}
 
-        {/* categoría con diseño */}
         <div className="space-y-2">
-          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
+          <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
             Categoría
           </label>
           <div className="relative">
@@ -301,7 +316,7 @@ export default function ProductsAdmin() {
               name="category"
               value={form.category}
               onChange={handleChange}
-              className="w-full appearance-none border rounded-md px-3 py-2 pr-9 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              className="theme-input appearance-none pr-9 text-sm"
             >
               <option value="" disabled>
                 Seleccionar categoría
@@ -313,8 +328,10 @@ export default function ProductsAdmin() {
               ))}
               <option value="__custom">Otra…</option>
             </select>
-            {/* flechita */}
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+            <span
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+              style={{ color: THEME.textSoft }}
+            >
               ▼
             </span>
           </div>
@@ -324,14 +341,14 @@ export default function ProductsAdmin() {
               type="text"
               value={customCategory}
               onChange={(e) => setCustomCategory(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+              className="theme-input text-sm"
               placeholder="Escribe la categoría (ej. Primera Comunión)"
             />
           )}
         </div>
 
         <div>
-          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
+          <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
             Descripción
           </label>
           <textarea
@@ -339,18 +356,17 @@ export default function ProductsAdmin() {
             value={form.description}
             onChange={handleChange}
             rows={3}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+            className="theme-input text-sm"
             placeholder="Figura de madera pintada a mano..."
           />
         </div>
 
-        {/* imagen */}
         <div className="space-y-2">
-          <label className="text-sm font-medium" style={{ color: COLORS.dark }}>
+          <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
             Imagen
           </label>
           <div className="flex items-center gap-3 flex-wrap">
-            <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-sm rounded-md cursor-pointer hover:bg-slate-50 transition-all">
+            <label className="theme-btn-soft inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg cursor-pointer transition-all">
               Seleccionar archivo
               <input
                 type="file"
@@ -360,20 +376,25 @@ export default function ProductsAdmin() {
               />
             </label>
             {file ? (
-              <span className="text-xs text-slate-500 truncate max-w-[140px]">
+              <span className="text-xs truncate max-w-[140px]" style={{ color: THEME.text }}>
                 {file.name}
               </span>
             ) : preview ? (
-              <span className="text-xs text-slate-500">Imagen actual</span>
+              <span className="text-xs" style={{ color: THEME.text }}>
+                Imagen actual
+              </span>
             ) : (
-              <span className="text-xs text-slate-400">Ninguna imagen</span>
+              <span className="text-xs" style={{ color: THEME.textSoft }}>
+                Ninguna imagen
+              </span>
             )}
           </div>
           {preview && (
             <img
               src={preview}
               alt="preview"
-              className="h-20 w-20 object-cover rounded-md border border-[#FCE7DA]"
+              className="h-20 w-20 object-cover rounded-md border"
+              style={{ borderColor: THEME.border }}
             />
           )}
         </div>
@@ -381,8 +402,7 @@ export default function ProductsAdmin() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 rounded-md text-sm font-medium text-white transition disabled:opacity-50"
-          style={{ backgroundColor: COLORS.accent }}
+          className="theme-btn-primary px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
         >
           {loading
             ? "Guardando..."
@@ -394,66 +414,134 @@ export default function ProductsAdmin() {
           <button
             type="button"
             onClick={resetForm}
-            className="ml-2 text-sm text-slate-500 hover:text-slate-700"
+            className="ml-2 text-sm"
+            style={{ color: THEME.text }}
           >
             Cancelar edición
           </button>
         )}
       </form>
 
-      {/* lista */}
-      <div className="space-y-3 mt-6">
-        <h2 className="text-lg font-semibold" style={{ color: COLORS.dark }}>
-          Productos registrados
-        </h2>
+      <div
+        className="theme-panel rounded-2xl p-5 md:p-6 space-y-4"
+        style={{
+          backgroundColor: THEME.surfaceStrong,
+          border: `1px solid ${THEME.borderStrong}`,
+          boxShadow: `0 26px 54px -40px ${THEME.shadowStrong}`,
+        }}
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold" style={{ color: THEME.textStrong }}>
+              Productos registrados
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end lg:min-w-[420px]">
+            <div
+              className="flex h-10 w-full items-center gap-2 rounded-xl px-3 sm:max-w-[320px]"
+              style={{
+                backgroundColor: THEME.surfaceStrong,
+                border: `1px solid ${THEME.borderStrong}`,
+              }}
+            >
+              <Search
+                size={16}
+                className="shrink-0"
+                style={{ color: THEME.textSoft }}
+              />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Buscar producto..."
+                className="w-full border-0 bg-transparent p-0 text-sm outline-none"
+                style={{ color: THEME.textStrong }}
+              />
+            </div>
+            <div
+              className="inline-flex h-10 items-center justify-center rounded-xl px-3 text-sm sm:min-w-[120px]"
+              style={{
+                backgroundColor: THEME.surface,
+                color: THEME.textStrong,
+                border: `1px solid ${THEME.border}`,
+              }}
+            >
+              {filteredProducts.length} resultado{filteredProducts.length === 1 ? "" : "s"}
+            </div>
+          </div>
+        </div>
+
         {dbProducts.length === 0 ? (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm" style={{ color: THEME.text }}>
             Aún no hay productos. Agrega uno arriba ✨
           </p>
+        ) : filteredProducts.length === 0 ? (
+          <div
+            className="rounded-2xl px-4 py-10 text-center"
+            style={{
+              backgroundColor: THEME.surface,
+              border: `1px solid ${THEME.border}`,
+            }}
+          >
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl" style={{ backgroundColor: THEME.tintCoral }}>
+              <PackageSearch size={22} style={{ color: THEME.primary }} />
+            </div>
+            <p className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+              No encontramos ese producto
+            </p>
+            <p className="mt-1 text-xs" style={{ color: THEME.text }}>
+              Prueba con otro nombre o categoría.
+            </p>
+          </div>
         ) : (
           <ul className="grid gap-3 md:grid-cols-2">
-            {dbProducts.map((p) => (
+            {filteredProducts.map((p) => (
               <li
                 key={p.id}
-                className="flex gap-4 rounded-xl p-4 bg-white/60 border border-[#FCE7DA]/60"
+                className="flex gap-4 rounded-2xl p-4"
+                style={{
+                  backgroundColor: THEME.surface,
+                  border: `1px solid ${THEME.border}`,
+                  boxShadow: `0 18px 36px -34px ${THEME.shadowStrong}`,
+                }}
               >
                 {p.image_url ? (
                   <img
                     src={p.image_url}
                     alt={p.name}
-                    className="h-16 w-16 rounded-md object-cover"
+                    className="h-[4.5rem] w-[4.5rem] rounded-xl object-cover"
                   />
                 ) : (
-                  <div className="h-16 w-16 rounded-md bg-pink-50 flex items-center justify-center text-xl">
+                  <div className="h-[4.5rem] w-[4.5rem] rounded-xl flex items-center justify-center text-xl theme-empty-tile">
                     🪵
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <p
                     className="text-sm font-semibold truncate"
-                    style={{ color: COLORS.dark }}
+                    style={{ color: THEME.textStrong }}
                   >
                     {p.name}
                   </p>
-                  <p className="text-xs text-slate-500 mb-1">
+                  <p className="text-xs mb-1" style={{ color: THEME.text }}>
                     ${p.price} · {p.category}
                   </p>
                   {p.on_sale && p.sale_price && (
-                    <p className="text-[10px] text-red-500 font-medium">
+                    <p className="text-[10px] font-medium" style={{ color: THEME.accent }}>
                       En promoción: ${p.sale_price}
                     </p>
                   )}
                   <div className="flex gap-2 mt-2">
                     <button
                       onClick={() => handleEdit(p)}
-                      className="text-xs px-2 py-1 rounded text-white"
-                      style={{ backgroundColor: COLORS.dark }}
+                      className="theme-btn-secondary text-xs px-2 py-1 rounded-lg"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleDelete(p)}
-                      className="text-xs px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200"
+                      className="theme-btn-danger text-xs px-2 py-1 rounded-lg"
                     >
                       Eliminar
                     </button>
@@ -464,6 +552,6 @@ export default function ProductsAdmin() {
           </ul>
         )}
       </div>
-    </>
+    </div>
   );
 }

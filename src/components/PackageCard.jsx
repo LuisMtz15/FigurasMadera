@@ -1,5 +1,6 @@
 // src/components/PackageCard.jsx
 import { SITE_CONFIG } from "../config/site.js";
+import { THEME } from "../config/theme.js";
 
 export default function PackageCard({ pkg, products }) {
   const hasProducts = products && products.length > 0;
@@ -31,7 +32,10 @@ export default function PackageCard({ pkg, products }) {
     const imgs = products.slice(0, 4);
 
     const Mini = ({ src, alt }) => (
-      <div className="w-full h-36 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+      <div
+        className="w-full h-36 rounded-xl flex items-center justify-center shadow-sm overflow-hidden"
+        style={{ backgroundColor: THEME.surfaceSoft }}
+      >
         {src ? (
           <img
             src={src}
@@ -88,39 +92,50 @@ export default function PackageCard({ pkg, products }) {
 
   return (
     <div
-      className="rounded-xl border p-4 flex flex-col justify-between transition hover:shadow-md h-full"
+      className="rounded-xl border p-4 flex flex-col justify-between transition h-full"
       style={{
-        backgroundColor: "#FDF5F0",
-        borderColor: "#FCE7DA",
+        backgroundColor: THEME.palette.white,
+        borderColor: THEME.borderStrong,
+        boxShadow: `0 28px 54px -26px ${THEME.shadowStrong}`,
       }}
     >
-      {/* collage */}
       <div className="rounded-lg overflow-hidden mb-3 bg-transparent relative min-h-[10rem]">
         {renderCollage()}
 
-        <span className="absolute top-2 left-2 bg-white text-[10px] px-3 py-1 rounded-full text-[#5A3B2E] shadow-sm">
+        <span
+          className="absolute top-2 left-2 text-[10px] px-3 py-1 rounded-full shadow-sm"
+          style={{
+            backgroundColor: THEME.palette.white,
+            color: THEME.textStrong,
+          }}
+        >
           Paquete
         </span>
         {hasProducts && products.length > 4 && (
-          <span className="absolute bottom-2 right-2 bg-black/40 text-white text-[10px] px-2 py-0.5 rounded-full">
+          <span
+            className="absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-full"
+            style={{
+              backgroundColor: THEME.overlay,
+              color: THEME.textInverse,
+            }}
+          >
             +{products.length - 4}
           </span>
         )}
       </div>
 
-      {/* contenido */}
       <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
           <h3
             className="text-lg font-semibold truncate"
-            style={{ color: "#5A3B2E" }}
+            style={{ color: THEME.textStrong }}
           >
             {pkg.name}
           </h3>
-          <p className="text-[11px] text-slate-500 mb-1">
+          <p className="text-[11px] mb-1" style={{ color: THEME.textSoft }}>
             Incluye {products.length} figura{products.length === 1 ? "" : "s"}
           </p>
-          <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+          <p className="text-sm mb-2 line-clamp-2" style={{ color: THEME.text }}>
             {pkg.description || "Paquete de figuras pintadas a mano."}
           </p>
         </div>
@@ -128,15 +143,15 @@ export default function PackageCard({ pkg, products }) {
         <div className="mt-2 mb-2">
           {priceIsPromo ? (
             <div className="flex items-baseline gap-2">
-              <span className="text-xs text-slate-400 line-through">
+              <span className="text-xs line-through" style={{ color: THEME.textSoft }}>
                 ${pkg.price} MXN
               </span>
-              <span className="text-base font-semibold text-[#5A3B2E]">
+              <span className="text-base font-semibold" style={{ color: THEME.textStrong }}>
                 ${pkg.promo_price} MXN
               </span>
             </div>
           ) : (
-            <p className="text-sm font-medium" style={{ color: "#5A3B2E" }}>
+            <p className="text-sm font-medium" style={{ color: THEME.textStrong }}>
               {pkg.price ? `$${pkg.price} MXN` : ""}
             </p>
           )}
@@ -146,8 +161,7 @@ export default function PackageCard({ pkg, products }) {
           href={link}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 w-full text-center text-sm font-medium py-2 rounded-md text-white"
-          style={{ backgroundColor: "#E98A6B" }}
+          className="theme-btn-primary mt-2 w-full text-center text-sm font-medium py-2 rounded-lg"
         >
           Pedir este paquete
         </a>

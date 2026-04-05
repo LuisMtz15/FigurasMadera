@@ -1,6 +1,7 @@
 // src/components/ProductCard.jsx
 import { useEffect, useState } from "react";
 import { SITE_CONFIG } from "../config/site.js";
+import { THEME } from "../config/theme.js";
 
 export default function ProductCard({ product }) {
   const [open, setOpen] = useState(false);
@@ -31,14 +32,21 @@ export default function ProductCard({ product }) {
   return (
     <>
       <div
-        className="rounded-xl border p-4 flex flex-col justify-between transition hover:shadow-md h-full"
-        style={{ backgroundColor: "#FDF5F0", borderColor: "#FCE7DA" }}
+        className="rounded-xl border p-4 flex flex-col justify-between transition h-full"
+        style={{
+          backgroundColor: THEME.palette.white,
+          borderColor: THEME.borderStrong,
+          boxShadow: `0 28px 54px -26px ${THEME.shadowStrong}`,
+        }}
       >
-        {/* IMAGEN / abre lightbox */}
         <button
           type="button"
           onClick={() => product.image_url && setOpen(true)}
-          className="aspect-square rounded-lg overflow-hidden mb-3 bg-white/40 relative cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
+          className="aspect-square rounded-lg overflow-hidden mb-3 relative cursor-zoom-in focus:outline-none"
+          style={{
+            backgroundColor: THEME.surfaceSoft,
+            boxShadow: `0 0 0 0 ${THEME.focus}`,
+          }}
           aria-label={`Ver imagen de ${product.name}`}
         >
           {product.image_url ? (
@@ -55,7 +63,13 @@ export default function ProductCard({ product }) {
           )}
 
           {onSale && (
-            <span className="absolute top-2 left-2 bg-[#E98A6B] text-white text-[10px] px-2 py-1 rounded-full">
+            <span
+              className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full"
+              style={{
+                backgroundColor: THEME.accent,
+                color: THEME.textInverse,
+              }}
+            >
               Promoción
             </span>
           )}
@@ -66,14 +80,14 @@ export default function ProductCard({ product }) {
           <div>
             <h3
               className="text-lg font-semibold truncate"
-              style={{ color: "#5A3B2E" }}
+              style={{ color: THEME.textStrong }}
             >
               {product.name}
             </h3>
             {product.category ? (
-              <p className="text-[11px] text-slate-500 mb-1">{product.category}</p>
+              <p className="text-[11px] mb-1" style={{ color: THEME.textSoft }}>{product.category}</p>
             ) : null}
-            <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+            <p className="text-sm mb-2 line-clamp-2" style={{ color: THEME.text }}>
               {product.description || "Figura de madera pintada a mano."}
             </p>
           </div>
@@ -81,15 +95,15 @@ export default function ProductCard({ product }) {
           <div className="mt-2 mb-2">
             {onSale ? (
               <div className="flex items-baseline gap-2">
-                <span className="text-xs text-slate-400 line-through">
+                <span className="text-xs line-through" style={{ color: THEME.textSoft }}>
                   ${product.price} MXN
                 </span>
-                <span className="text-base font-semibold" style={{ color: "#5A3B2E" }}>
+                <span className="text-base font-semibold" style={{ color: THEME.textStrong }}>
                   ${product.sale_price} MXN
                 </span>
               </div>
             ) : (
-              <p className="text-sm font-medium" style={{ color: "#5A3B2E" }}>
+              <p className="text-sm font-medium" style={{ color: THEME.textStrong }}>
                 {product.price ? `$${product.price} MXN` : ""}
               </p>
             )}
@@ -99,8 +113,7 @@ export default function ProductCard({ product }) {
             href={link}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 w-full text-center text-sm font-medium py-2 rounded-md text-white"
-            style={{ backgroundColor: "#E98A6B" }}
+            className="theme-btn-primary mt-2 w-full text-center text-sm font-medium py-2 rounded-lg"
           >
             Pedir por WhatsApp
           </a>
@@ -110,7 +123,7 @@ export default function ProductCard({ product }) {
       {/* LIGHTBOX / MODAL */}
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[1px] flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 backdrop-blur-[1px] flex items-center justify-center p-4 theme-overlay"
           role="dialog"
           aria-modal="true"
           aria-label={`Imagen de ${product.name}`}
@@ -120,12 +133,15 @@ export default function ProductCard({ product }) {
           }}
         >
           <div className="relative max-w-[90vw] max-h-[85vh]">
-            {/* botón cerrar */}
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Cerrar imagen"
-              className="absolute -top-3 -right-3 md:-top-4 md:-right-4 h-9 w-9 rounded-full bg-white/90 text-[#5A3B2E] shadow-lg flex items-center justify-center hover:bg-white"
+              className="absolute -top-3 -right-3 md:-top-4 md:-right-4 h-9 w-9 rounded-full shadow-lg flex items-center justify-center"
+              style={{
+                backgroundColor: THEME.surfaceStrong,
+                color: THEME.textStrong,
+              }}
             >
               ✕
             </button>
@@ -134,10 +150,14 @@ export default function ProductCard({ product }) {
               <img
                 src={product.image_url}
                 alt={product.name}
-                className="rounded-lg shadow-xl max-w-[90vw] max-h-[85vh] object-contain bg-white"
+                className="rounded-lg shadow-xl max-w-[90vw] max-h-[85vh] object-contain"
+                style={{ backgroundColor: THEME.palette.white }}
               />
             ) : (
-              <div className="rounded-lg bg-white h-[60vh] w-[80vw] max-w-[700px] flex items-center justify-center text-6xl">
+              <div
+                className="rounded-lg h-[60vh] w-[80vw] max-w-[700px] flex items-center justify-center text-6xl"
+                style={{ backgroundColor: THEME.palette.white }}
+              >
                 🪵
               </div>
             )}

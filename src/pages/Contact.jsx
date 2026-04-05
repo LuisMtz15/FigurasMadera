@@ -2,13 +2,8 @@
 import { SITE_CONFIG } from "../config/site.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const COLORS = {
-  surface: "rgba(255,255,255,0.8)",
-  border: "rgba(252, 231, 218, 0.7)", // #FCE7DA
-  dark: "#5A3B2E",
-  accent: "#E98A6B",
-};
+import { THEME } from "../config/theme.js";
+import { Mail, MessageCircle, Paintbrush, Phone, User } from "lucide-react";
 
 export default function Contact() {
   const navigate = useNavigate();
@@ -61,144 +56,247 @@ export default function Contact() {
 
   return (
     <div className="py-12">
-      <div className="container-main max-w-3xl space-y-8">
-        {/* encabezado */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold" style={{ color: COLORS.dark }}>
-            Contáctanos
-          </h1>
-          <p className="text-slate-600">
-            Dinos qué pieza te gustó o qué te gustaría que pintáramos. Te
-            contestamos por correo o WhatsApp.
-          </p>
-        </div>
-
-        {/* card del formulario */}
-        <div
-          className="rounded-2xl p-6 md:p-7 space-y-4"
-          style={{
-            backgroundColor: COLORS.surface,
-            border: `1px solid ${COLORS.border}`,
-          }}
-        >
-          <p className="text-sm font-medium" style={{ color: COLORS.dark }}>
-            Envíanos tus datos 💛
-          </p>
-
-          <form
-            name="contact"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-            {/* Campo oculto que identifica el formulario */}
-            <input type="hidden" name="form-name" value="contact" />
-            <input
-              type="hidden"
-              name="subject"
-              value="Formulario Belleza en Madera"
-            />
-
-            {/* Honeypot (para bots) */}
-            <p className="hidden">
-              <label>
-                No llenar: <input name="bot-field" />
-              </label>
-            </p>
-
-            {/* Campos */}
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-1">
-                <label className="text-sm" style={{ color: COLORS.dark }}>
-                  Nombre completo
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                  placeholder="Ej. Mariela Gómez"
-                  required
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm" style={{ color: COLORS.dark }}>
-                  Correo
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                  placeholder="tu@correo.com"
-                  required
-                />
+      <div className="container-main max-w-6xl space-y-8">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div className="space-y-5">
+            <div className="space-y-3">
+              <span
+                className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.16em] uppercase"
+                style={{
+                  backgroundColor: THEME.tintCoral,
+                  color: THEME.primary,
+                  border: `1px solid ${THEME.border}`,
+                }}
+              >
+                Hablemos de tu idea
+              </span>
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: THEME.textStrong }}>
+                  Contáctanos
+                </h1>
+                <p className="max-w-xl text-sm md:text-base leading-relaxed" style={{ color: THEME.text }}>
+                  Si viste una pieza que te gustó o quieres un detalle personalizado, cuéntanos lo que tienes en mente y te ayudamos a hacerlo realidad.
+                </p>
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-1">
-                <label className="text-sm" style={{ color: COLORS.dark }}>
-                  Teléfono / WhatsApp
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                  placeholder="+52 ..."
-                />
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              <div
+                className="rounded-2xl p-4 space-y-2"
+                style={{
+                  backgroundColor: THEME.surfaceStrong,
+                  border: `1px solid ${THEME.border}`,
+                  boxShadow: `0 20px 40px -34px ${THEME.shadowStrong}`,
+                }}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: THEME.tintCoral }}>
+                  <MessageCircle size={18} style={{ color: THEME.primary }} />
+                </div>
+                <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Atención por WhatsApp
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+                  Ideal si quieres resolver dudas rápido o pedir información de una pieza.
+                </p>
               </div>
-              <div className="space-y-1">
-                <label className="text-sm" style={{ color: COLORS.dark }}>
-                  Asunto / Tema
-                </label>
-                <input
-                  type="text"
-                  name="topic" // 👈 ya no "subject"
-                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                  placeholder="Figura que vi / Pedido / Info"
-                />
+
+              <div
+                className="rounded-2xl p-4 space-y-2"
+                style={{
+                  backgroundColor: THEME.surfaceStrong,
+                  border: `1px solid ${THEME.border}`,
+                  boxShadow: `0 20px 40px -34px ${THEME.shadowStrong}`,
+                }}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: THEME.surfaceSoft }}>
+                  <Paintbrush size={18} style={{ color: THEME.primary }} />
+                </div>
+                <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Piezas personalizadas
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+                  Cuéntanos la ocasión, colores o idea que quieres para crear un detalle especial.
+                </p>
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-sm" style={{ color: COLORS.dark }}>
-                Cuéntanos qué necesitas
-              </label>
-              <textarea
-                rows={4}
-                name="message"
-                className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-                placeholder="Quiero una figura personalizada de..., vi una flor pastel y quiero precio..."
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={sending}
-              className="w-full py-2 rounded-md text-sm font-medium text-white disabled:opacity-60"
-              style={{ backgroundColor: COLORS.accent }}
+            <div
+              className="rounded-2xl p-5 space-y-4"
+              style={{
+                backgroundColor: THEME.primary,
+                color: THEME.textInverse,
+                boxShadow: `0 28px 54px -36px ${THEME.shadowStrong}`,
+              }}
             >
-              {sending ? "Enviando..." : "Enviar mensaje"}
-            </button>
-          </form>
-        </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold">¿Lo quieres resolver rapidito?</p>
+                <p className="text-sm" style={{ color: "rgba(255,255,255,0.82)" }}>
+                  Escríbenos directo y te respondemos por WhatsApp.
+                </p>
+              </div>
 
-        {/* bloque de whatsapp */}
-        <div className="text-center space-y-3">
-          <p className="text-sm text-slate-600">¿Lo quieres resolver rapidito?</p>
-          <a
-            href={whatsappLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center px-5 py-2 rounded-md text-sm font-medium text-white"
-            style={{ backgroundColor: COLORS.dark }}
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium transition sm:w-fit"
+                style={{
+                  backgroundColor: THEME.palette.white,
+                  color: THEME.primary,
+                }}
+              >
+                <Phone size={16} />
+                Escribir por WhatsApp
+              </a>
+
+              <div className="flex flex-col gap-1 text-xs" style={{ color: "rgba(255,255,255,0.76)" }}>
+                <p>Número: +52 {SITE_CONFIG.whatsappNumber}</p>
+                <p>Horario: Lunes a sábado, 10:00 am - 6:00 pm.</p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="theme-panel rounded-[1.75rem] p-6 md:p-7 space-y-5 lg:self-center"
+            style={{
+              backgroundColor: THEME.surfaceStrong,
+              border: `1px solid ${THEME.borderStrong}`,
+              boxShadow: `0 30px 60px -42px ${THEME.shadowStrong}`,
+            }}
           >
-            Escribir por WhatsApp
-          </a>
-          <p className="text-xs text-slate-400">
-            Horario aproximado: Lunes a sábado, 10:00 am - 6:00 pm.
-          </p>
+            <div className="space-y-2">
+              <p className="text-l font-semibold" style={{ color: THEME.textStrong }}>
+                Formulario
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+                Déjanos tus datos y cuéntanos qué necesitas. Te respondemos por correo o WhatsApp.
+              </p>
+            </div>
+
+            <form
+              name="contact"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+              <input type="hidden" name="form-name" value="contact" />
+              <input
+                type="hidden"
+                name="subject"
+                value="Formulario Belleza en Madera"
+              />
+
+              <p className="hidden">
+                <label>
+                  No llenar: <input name="bot-field" />
+                </label>
+              </p>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                    Nombre completo
+                  </label>
+                  <div
+                    className="flex h-10 items-center gap-2 rounded-md px-3"
+                    style={{
+                      backgroundColor: THEME.surfaceStrong,
+                      border: `1px solid ${THEME.border}`,
+                    }}
+                  >
+                    <User size={16} className="shrink-0" style={{ color: THEME.textSoft }} />
+                    <input
+                      type="text"
+                      name="name"
+                      className="w-full border-0 bg-transparent p-0 text-sm outline-none"
+                      style={{ color: THEME.textStrong }}
+                      placeholder="Ej. Mariela Gómez"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                    Correo
+                  </label>
+                  <div
+                    className="flex h-10 items-center gap-2 rounded-md px-3"
+                    style={{
+                      backgroundColor: THEME.surfaceStrong,
+                      border: `1px solid ${THEME.border}`,
+                    }}
+                  >
+                    <Mail size={16} className="shrink-0" style={{ color: THEME.textSoft }} />
+                    <input
+                      type="email"
+                      name="email"
+                      className="w-full border-0 bg-transparent p-0 text-sm outline-none"
+                      style={{ color: THEME.textStrong }}
+                      placeholder="tu@correo.com"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                    Teléfono / WhatsApp
+                  </label>
+                  <div
+                    className="flex h-10 items-center gap-2 rounded-md px-3"
+                    style={{
+                      backgroundColor: THEME.surfaceStrong,
+                      border: `1px solid ${THEME.border}`,
+                    }}
+                  >
+                    <Phone size={16} className="shrink-0" style={{ color: THEME.textSoft }} />
+                    <input
+                      type="tel"
+                      name="phone"
+                      className="w-full border-0 bg-transparent p-0 text-sm outline-none"
+                      style={{ color: THEME.textStrong }}
+                      placeholder="+52 ..."
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                    Asunto / Tema
+                  </label>
+                  <input
+                    type="text"
+                    name="topic"
+                    className="theme-input text-sm"
+                    placeholder="Pedido, pieza vista, idea personalizada..."
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                  Cuéntanos qué necesitas
+                </label>
+                <textarea
+                  rows={5}
+                  name="message"
+                  className="theme-input text-sm"
+                  placeholder="Me gustó una pieza, quiero cotizar un detalle personalizado para una fecha especial..."
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={sending}
+                className="theme-btn-primary w-full py-3 rounded-lg text-sm font-medium disabled:opacity-60"
+              >
+                {sending ? "Enviando..." : "Enviar mensaje"}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

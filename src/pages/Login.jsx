@@ -2,18 +2,13 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/Logo_Maderitas.png";
-
-const COLORS = {
-  surface: "rgba(255,255,255,0.85)",
-  border: "rgba(252, 231, 218, 1)", // #FCE7DA
-  dark: "#5A3B2E",
-  accent: "#E98A6B",
-};
+import { THEME } from "../config/theme.js";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -42,73 +37,124 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10">
-      <div
-        className="w-full max-w-sm rounded-2xl p-6 space-y-5 shadow-sm"
-        style={{
-          backgroundColor: COLORS.surface,
-          border: `1px solid ${COLORS.border}`,
-        }}
-      >
-        <div className="flex flex-col items-center gap-2">
-          <img
-            src={logo}
-            alt="Belleza en Madera"
-            className="h-10 w-auto object-contain"
-          />
-          <h1
-            className="text-lg font-semibold"
-            style={{ color: COLORS.dark }}
-          >
-            Inicia sesión
-          </h1>
-          <p className="text-xs text-slate-500 text-center">
-            Área privada para agregar productos.
-          </p>
+      <div className="relative w-full max-w-md">
+        <div
+          className="absolute inset-3 rounded-[2.25rem]"
+          style={{
+            background: `linear-gradient(180deg, ${THEME.tintCoral} 0%, ${THEME.backgroundAlt} 100%)`,
+            filter: "blur(0px)",
+            opacity: 0.95,
+          }}
+        />
+
+        <div
+          className="relative theme-panel w-full rounded-[2rem] p-6 md:p-8 space-y-6"
+          style={{
+            backgroundColor: THEME.surfaceStrong,
+            boxShadow: `0 36px 80px -42px ${THEME.shadowStrong}`,
+            border: `1px solid ${THEME.borderStrong}`,
+          }}
+        >
+          <div className="flex flex-col items-center gap-3 text-center">
+            <span
+              className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.16em] uppercase"
+              style={{
+                backgroundColor: THEME.tintCoral,
+                color: THEME.primary,
+                border: `1px solid ${THEME.border}`,
+              }}
+            >
+              Acceso privado
+            </span>
+            <div
+              className="flex h-22 w-22 items-center justify-center rounded-[1.75rem] p-4 md:h-24 md:w-24"
+              style={{
+                background: `linear-gradient(180deg, ${THEME.surfaceSoft} 0%, ${THEME.surfaceStrong} 100%)`,
+                boxShadow: `0 22px 36px -28px ${THEME.shadowStrong}`,
+                border: `1px solid ${THEME.borderStrong}`,
+              }}
+            >
+              <img
+                src="/Logo_completo_minimalista.png"
+                alt="Belleza en Madera"
+                className="h-14 md:h-16 w-auto object-contain"
+              />
+            </div>
+            <div className="space-y-1">
+              <h2
+                className="text-xl md:text-2xl font-semibold"
+                style={{ color: THEME.textStrong }}
+              >
+                Inicia sesión
+              </h2>
+              <p className="text-sm leading-relaxed" style={{ color: THEME.text }}>
+                Accede al panel para administrar tu catálogo con tranquilidad.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                Correo
+              </label>
+              <input
+                type="email"
+                className="theme-input text-sm"
+                placeholder="dueña@bellezaenmadera.mx"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium" style={{ color: THEME.textStrong }}>
+                Contraseña
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="theme-input pr-11 text-sm"
+                  placeholder="Tu contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-md transition"
+                  style={{ color: THEME.textSoft }}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {err && (
+              <div
+                className="rounded-xl px-3 py-2 text-xs"
+                style={{
+                  backgroundColor: THEME.tintCoral,
+                  color: THEME.danger,
+                  border: `1px solid ${THEME.border}`,
+                }}
+              >
+                {err}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="theme-btn-primary w-full py-3 mt-2 rounded-lg text-sm font-medium transition"
+            >
+              {loading ? "Entrando..." : "Acceder"}
+            </button>
+          </form>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm" style={{ color: COLORS.dark }}>
-              Correo
-            </label>
-            <input
-              type="email"
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-              placeholder="duena@bellezaenmadera.mx"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-sm" style={{ color: COLORS.dark }}>
-              Contraseña
-            </label>
-            <input
-              type="password"
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FCE7DA]"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          {err && <p className="text-xs text-red-500">{err}</p>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 rounded-md text-sm font-medium text-white transition"
-            style={{ backgroundColor: COLORS.accent }}
-          >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
-
-        <p className="text-[10px] text-slate-400 text-center">
-          Si olvidaste tus datos, cámbialos desde Supabase → Auth → Users.
-        </p>
       </div>
     </div>
   );

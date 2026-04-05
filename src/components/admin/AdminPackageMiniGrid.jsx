@@ -1,4 +1,6 @@
 // src/components/admin/AdminPackageMiniGrid.jsx
+import { THEME } from "../../config/theme.js";
+
 export default function AdminPackageMiniGrid({ products }) {
   const firstFour = products.slice(0, 4);
   const remaining = products.length - firstFour.length;
@@ -11,19 +13,20 @@ export default function AdminPackageMiniGrid({ products }) {
             key={p.id}
             src={p.image_url}
             alt={p.name}
-            className="w-9 h-9 rounded object-cover bg-slate-50"
+            className="w-9 h-9 rounded object-cover"
+            style={{ backgroundColor: THEME.surfaceStrong }}
           />
         ) : (
           <div
             key={p.id}
-            className="w-9 h-9 rounded bg-amber-50 flex items-center justify-center text-[12px]"
+            className="w-9 h-9 rounded flex items-center justify-center text-[12px] theme-empty-tile"
           >
             🪵
           </div>
         )
       )}
       {remaining > 0 && (
-        <div className="w-9 h-9 rounded bg-slate-100 flex items-center justify-center text-[10px] text-slate-500">
+        <div className="w-9 h-9 rounded flex items-center justify-center text-[10px] theme-counter-tile">
           +{remaining}
         </div>
       )}

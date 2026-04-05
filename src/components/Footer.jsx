@@ -1,70 +1,54 @@
 // src/components/Footer.jsx
 import { SITE_CONFIG } from "../config/site.js";
 import { Link } from "react-router-dom";
-import logo from "../assets/Logo_Maderitas.png";
-
-const COLORS = {
-  bg: "#FEFAF7",
-  dark: "#5A3B2E",
-  soft: "#FCE7DA",
-};
+import { THEME, alpha } from "../config/theme.js";
 
 export default function Footer() {
   return (
     <footer
       className="mt-10"
       style={{
-        backgroundColor: COLORS.bg,
-        borderTop: `1px solid rgba(252, 231, 218, 0.5)`,
+        backgroundColor: THEME.surface,
+        borderTop: `1px solid ${alpha(THEME.primary, 0.12)}`,
       }}
     >
-      <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        {/* izquierda: logo + texto */}
-        <div className="flex items-center gap-3">
+      <div className="max-w-6xl mx-auto px-4 py-8 md:py-6 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col items-center gap-3 text-center md:flex-row md:text-left">
           <img
-            src={logo}
+            src="/Logo_completo_minimalista.png"
             alt="Belleza en Madera"
-            className="h-9 w-auto object-contain"
+            className="h-12 w-auto object-contain"
           />
           <div>
-            <p className="text-sm font-semibold" style={{ color: COLORS.dark }}>
+            <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
               Belleza en Madera
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs" style={{ color: THEME.textSoft }}>
               Figuras de madera pintadas a mano.
             </p>
           </div>
         </div>
 
-        {/* centro: links */}
-        <div className="flex gap-4 text-sm text-slate-600 flex-wrap">
-          <Link to="/" className="hover:text-[#E98A6B] transition">
+        <div
+          className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-center md:flex md:flex-wrap md:justify-center"
+          style={{ color: THEME.text }}
+        >
+          <Link to="/" className="theme-link">
             Inicio
           </Link>
-          <Link to="/productos" className="hover:text-[#E98A6B] transition">
+          <Link to="/productos" className="theme-link">
             Productos
           </Link>
-          <Link to="/quienes-somos" className="hover:text-[#E98A6B] transition">
+          <Link to="/quienes-somos" className="theme-link">
             Quiénes somos
           </Link>
-          <Link to="/contacto" className="hover:text-[#E98A6B] transition">
+          <Link to="/contacto" className="theme-link">
             Contáctanos
           </Link>
         </div>
 
-        {/* derecha: whatsapp */}
-        <div className="flex flex-col items-start md:items-end gap-2">
-          <a
-            href={`https://wa.me/${SITE_CONFIG.whatsappNumber}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium text-white"
-            style={{ backgroundColor: "#E98A6B" }}
-          >
-            WhatsApp
-            <span aria-hidden>→</span>
-          </a>
-          <p className="text-[10px] text-slate-400">
+        <div className="flex flex-col items-center md:items-end gap-2">
+          <p className="text-[10px]" style={{ color: alpha(THEME.primary, 0.5) }}>
             © {new Date().getFullYear()} Belleza en Madera.
           </p>
         </div>

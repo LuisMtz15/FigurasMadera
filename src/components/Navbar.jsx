@@ -2,13 +2,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logo from "../assets/Logo_Maderitas.png";
-
-const COLORS = {
-  dark: "#5A3B2E",   // texto madera
-  accent: "#E98A6B", // activo
-  hover: "#FCE7DA",  // hover clarito
-};
+import { THEME } from "../config/theme.js";
 
 const links = [
   { to: "/", label: "Inicio" },
@@ -18,26 +12,24 @@ const links = [
 ];
 
 const base =
-  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150";
+  "px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-white/80 backdrop-blur border-b sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 flex h-14 items-center justify-between gap-4">
-        {/* logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Belleza en Madera" className="h-8 w-auto" />
-          <span
-            className="text-sm font-semibold tracking-tight"
-            style={{ color: COLORS.dark }}
-          >
-            Belleza en Madera
-          </span>
+    <header
+      className="backdrop-blur sticky top-0 z-50"
+      style={{
+        backgroundColor: THEME.primary,
+        borderBottom: `1px solid ${THEME.primaryHover}`,
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-4 flex h-18 md:h-20 items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/Logo_completo.png" alt="Belleza en Madera" className="h-14 md:h-16 w-auto" />
         </Link>
 
-        {/* desktop */}
         <nav className="hidden md:flex gap-1">
           {links.map((item) => (
             <NavLink
@@ -45,24 +37,23 @@ export default function Navbar() {
               to={item.to}
               className={({ isActive }) =>
                 isActive
-                  ? `${base} text-white`
+                  ? `${base}`
                   : `${base}`
               }
               style={({ isActive }) => ({
-                backgroundColor: isActive ? COLORS.accent : "transparent",
-                color: isActive ? "#fff" : COLORS.dark,
+                backgroundColor: isActive ? "rgba(255, 255, 255, 0.14)" : "transparent",
+                color: THEME.textInverse,
               })}
-              // 👇 este onMouseEnter/onMouseLeave asegura hover cálido
               onMouseEnter={(e) => {
                 if (!e.currentTarget.classList.contains("active")) {
-                  e.currentTarget.style.backgroundColor = COLORS.hover;
+                  e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
                 }
               }}
               onMouseLeave={(e) => {
                 const isActive = e.currentTarget
                   .getAttribute("aria-current") === "page";
                 e.currentTarget.style.backgroundColor = isActive
-                  ? COLORS.accent
+                  ? "rgba(255, 255, 255, 0.14)"
                   : "transparent";
               }}
             >
@@ -74,15 +65,21 @@ export default function Navbar() {
         {/* menú mobile */}
         <button
           onClick={() => setOpen((p) => !p)}
-          className="md:hidden inline-flex items-center justify-center rounded-md p-2"
-          style={{ color: COLORS.dark }}
+          className="md:hidden inline-flex items-center justify-center rounded-lg p-2"
+          style={{ color: THEME.textInverse }}
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
       {open && (
-        <div className="md:hidden border-t bg-white/90 backdrop-blur">
+        <div
+          className="md:hidden backdrop-blur"
+          style={{
+            borderTop: `1px solid rgba(255, 255, 255, 0.12)`,
+            backgroundColor: THEME.primary,
+          }}
+        >
           <nav className="px-4 py-3 flex flex-col gap-2">
             {links.map((item) => (
               <NavLink
@@ -91,12 +88,12 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   isActive
-                    ? "px-3 py-2 rounded-md text-sm font-medium text-white"
-                    : "px-3 py-2 rounded-md text-sm font-medium"
+                    ? "px-3 py-2 rounded-lg text-sm font-medium"
+                    : "px-3 py-2 rounded-lg text-sm font-medium"
                 }
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? COLORS.accent : "transparent",
-                  color: isActive ? "#fff" : COLORS.dark,
+                  backgroundColor: isActive ? "rgba(255, 255, 255, 0.14)" : "transparent",
+                  color: THEME.textInverse,
                 })}
               >
                 {item.label}

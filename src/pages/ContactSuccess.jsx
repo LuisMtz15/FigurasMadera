@@ -1,23 +1,30 @@
 // src/pages/ContactSuccess.jsx
+import { THEME } from "../config/theme.js";
+
 export default function ContactSuccess() {
   return (
     <div
       className="min-h-screen flex items-center justify-center"
       style={{
-        background: "linear-gradient(180deg, #FDF5F0 0%, #F9E0D1 100%)",
+        background: `linear-gradient(180deg, ${THEME.heroGradientStart} 0%, ${THEME.heroGradientEnd} 100%)`,
       }}
     >
-      <div className="bg-white/80 rounded-2xl p-10 text-center border border-[#FCE7DA] shadow-sm max-w-md">
-        <h1 className="text-2xl font-bold text-[#5A3B2E] mb-3">
+      <div
+        className="rounded-2xl p-10 text-center shadow-sm max-w-md"
+        style={{
+          backgroundColor: THEME.surfaceStrong,
+          border: `1px solid ${THEME.border}`,
+        }}
+      >
+        <h1 className="text-2xl font-bold mb-3" style={{ color: THEME.textStrong }}>
           ¡Gracias por tu mensaje! 💛
         </h1>
-        <p className="text-slate-600 mb-6">
+        <p className="mb-6" style={{ color: THEME.text }}>
           Lo recibimos y te vamos a responder lo antes posible.
         </p>
         <a
           href="/"
-          className="px-5 py-2 rounded-md text-sm font-medium text-white"
-          style={{ backgroundColor: "#E98A6B" }}
+          className="theme-btn-primary px-5 py-2 rounded-lg text-sm font-medium"
         >
           Volver al inicio
         </a>
