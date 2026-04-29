@@ -5,7 +5,7 @@ import PackageCard from "../components/PackageCard.jsx";
 import { fetchProducts } from "../lib/productsApi.js";
 import { fetchPackages } from "../lib/packagesApi.js";
 import { THEME } from "../config/theme.js";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Gift, Search, SlidersHorizontal, Sparkles } from "lucide-react";
 
 const CATEGORY_INFO = {
   Halloween: { label: "Halloween", emoji: "🎃", desc: "Decoración pintada a mano para octubre." },
@@ -94,63 +94,114 @@ export default function Products() {
         }
       : null;
 
-  return (
-    <div className="container-main py-12 space-y-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: THEME.textStrong }}>
-          Catálogo
-        </h1>
-      </div>
+  const activeCount =
+    activeTab === "productos" ? filtered.length : filteredPackages.length;
+  const activeLabel = activeTab === "productos" ? "producto" : "paquete";
 
-      <section className="space-y-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div
-            className="flex flex-wrap gap-2 w-fit"
-          >
-            <button
-              onClick={() => setActiveTab("productos")}
-              className="px-4 py-1.5 rounded-full text-sm transition"
-              style={{
-                backgroundColor:
-                  activeTab === "productos" ? THEME.primary : THEME.surfaceStrong,
-                color:
-                  activeTab === "productos" ? THEME.textInverse : THEME.textStrong,
-                border:
-                  activeTab === "productos"
-                    ? `1px solid ${THEME.primary}`
-                    : `1px solid ${THEME.border}`,
-              }}
-            >
-              Productos
-            </button>
-            <button
-              onClick={() => setActiveTab("paquetes")}
-              className="px-4 py-1.5 rounded-full text-sm transition"
-              style={{
-                backgroundColor:
-                  activeTab === "paquetes" ? THEME.primary : THEME.surfaceStrong,
-                color:
-                  activeTab === "paquetes" ? THEME.textInverse : THEME.textStrong,
-                border:
-                  activeTab === "paquetes"
-                    ? `1px solid ${THEME.primary}`
-                    : `1px solid ${THEME.border}`,
-              }}
-            >
-              Paquetes
-            </button>
+  return (
+    <div className="container-main py-10 md:py-12 space-y-8">
+      <section
+        className="overflow-hidden rounded-[1.75rem] p-5 sm:p-6 md:p-8 lg:p-10"
+        style={{
+          backgroundColor: THEME.primary,
+          color: THEME.textInverse,
+          boxShadow: `0 34px 70px -48px ${THEME.shadowStrong}`,
+        }}
+      >
+        <div className="grid gap-6 xl:grid-cols-[1fr_auto] xl:items-end">
+          <div className="max-w-3xl">
+            <p className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] sm:text-xs sm:tracking-[0.16em]" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+              <Sparkles size={14} />
+              Catálogo artesanal
+            </p>
+            <h1 className="font-display text-4xl font-black leading-tight sm:text-5xl md:text-6xl xl:text-7xl">
+              Piezas para regalar y celebrar
+            </h1>
+            <p className="mt-5 max-w-2xl text-sm leading-relaxed md:text-base" style={{ color: "rgba(255,255,255,0.82)" }}>
+              Explora figuras pintadas a mano, paquetes listos y detalles personalizados para las fechas especiales del año.
+            </p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end lg:min-w-[390px]">
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap xl:justify-end">
+            {[
+              ["Productos", allProducts.length],
+              ["Paquetes", allPackages.length],
+            ].map(([label, count]) => (
+              <div
+                key={label}
+                className="rounded-2xl px-4 py-3"
+                style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+              >
+                <p className="text-2xl font-black">{count}</p>
+                <p className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.72)" }}>
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-5">
+        <div
+          className="rounded-[1.5rem] p-4 md:p-5"
+          style={{
+            backgroundColor: THEME.surfaceStrong,
+            border: `1px solid ${THEME.borderStrong}`,
+            boxShadow: `0 24px 54px -44px ${THEME.shadowStrong}`,
+          }}
+        >
+          <div className="grid gap-4 xl:grid-cols-[auto_1fr_auto] xl:items-center">
             <div
-              className="flex h-11 w-full items-center gap-2 rounded-xl px-3 sm:max-w-sm"
+              className="flex w-full gap-2 rounded-2xl p-1 sm:w-fit"
               style={{
                 backgroundColor: THEME.palette.white,
-                border: `1px solid ${THEME.primary}`,
-                boxShadow: `0 16px 30px -24px ${THEME.shadowStrong}`,
+                border: `1px solid ${THEME.border}`,
               }}
             >
-              <Search size={16} className="shrink-0" style={{ color: THEME.textSoft }} />
+              <button
+                onClick={() => setActiveTab("productos")}
+                className="flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition sm:flex-none"
+                style={{
+                  backgroundColor:
+                    activeTab === "productos" ? THEME.primary : "transparent",
+                  color:
+                    activeTab === "productos" ? THEME.textInverse : THEME.textStrong,
+                }}
+              >
+                Productos
+              </button>
+              <button
+                onClick={() => setActiveTab("paquetes")}
+                className="flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition sm:flex-none"
+                style={{
+                  backgroundColor:
+                    activeTab === "paquetes" ? THEME.primary : "transparent",
+                  color:
+                    activeTab === "paquetes" ? THEME.textInverse : THEME.textStrong,
+                }}
+              >
+                Paquetes
+              </button>
+            </div>
+
+            <div
+              className="flex h-13 min-h-13 w-full items-center gap-3 rounded-2xl px-4"
+              style={{
+                backgroundColor: THEME.palette.white,
+                border: `1.5px solid ${THEME.primary}`,
+                boxShadow: `0 18px 34px -25px ${THEME.shadowStrong}`,
+              }}
+            >
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+                style={{
+                  backgroundColor: THEME.tintCoral,
+                  color: THEME.primary,
+                }}
+              >
+                <Search size={16} />
+              </span>
               <input
                 type="text"
                 value={activeTab === "productos" ? productSearchTerm : packageSearchTerm}
@@ -160,37 +211,63 @@ export default function Products() {
                     : setPackageSearchTerm(e.target.value)
                 }
                 placeholder={activeTab === "productos" ? "Buscar producto..." : "Buscar paquete..."}
-                className="w-full border-0 bg-transparent p-0 text-sm outline-none"
+                className="w-full border-0 bg-transparent p-0 text-sm font-medium outline-none"
                 style={{ color: THEME.textStrong }}
               />
             </div>
 
             <div
-              className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm sm:min-w-[124px]"
+              className="inline-flex h-12 items-center justify-center rounded-2xl px-4 text-sm font-semibold xl:min-w-[138px]"
               style={{
-                backgroundColor: THEME.surface,
-                color: THEME.textStrong,
-                border: `1px solid ${THEME.border}`,
+                backgroundColor: THEME.primary,
+                color: THEME.textInverse,
               }}
             >
-              {activeTab === "productos"
-                ? `${filtered.length} producto${filtered.length === 1 ? "" : "s"}`
-                : `${filteredPackages.length} paquete${filteredPackages.length === 1 ? "" : "s"}`}
+              {activeCount} {activeLabel}{activeCount === 1 ? "" : "s"}
             </div>
           </div>
         </div>
 
       {activeTab === "productos" ? (
-        <div className="space-y-5">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={16} style={{ color: THEME.textSoft }} />
-            <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
-              Filtrar productos por categoría
-            </p>
-          </div>
+        <div className="space-y-6">
+          <div
+            className="rounded-[1.5rem] p-4"
+            style={{
+              backgroundColor: THEME.palette.white,
+              border: `1px solid ${THEME.border}`,
+            }}
+          >
+            <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-xl"
+                  style={{
+                    backgroundColor: THEME.tintCoral,
+                    color: THEME.primary,
+                  }}
+                >
+                  <SlidersHorizontal size={16} />
+                </span>
+                <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
+                  Filtrar productos por categoría
+                </p>
+              </div>
 
-          <div className="sm:hidden">
-            
+              {categoryInfo ? (
+                <div
+                  className="w-fit rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{
+                    backgroundColor: THEME.tintCoral,
+                    color: THEME.primary,
+                    border: `1px solid ${THEME.border}`,
+                  }}
+                >
+                  {categoryInfo.emoji} {categoryInfo.label}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="sm:hidden">
             <div className="relative">
               <select
                 value={activeCategory}
@@ -232,14 +309,18 @@ export default function Products() {
           <div className="hidden sm:flex sm:flex-wrap sm:gap-3">
             <button
               onClick={() => setActiveCategory("Todos")}
-              className="px-4 py-1.5 rounded-full text-sm font-medium transition"
+              className="px-4 py-2 rounded-full text-sm font-semibold transition"
               style={{
                 backgroundColor:
-                  activeCategory === "Todos" ? THEME.primary : "transparent",
+                  activeCategory === "Todos" ? THEME.primary : THEME.surfaceStrong,
                 color:
                   activeCategory === "Todos"
                     ? THEME.textInverse
                     : THEME.textStrong,
+                border:
+                  activeCategory === "Todos"
+                    ? `1px solid ${THEME.primary}`
+                    : `1px solid ${THEME.border}`,
               }}
             >
               Todos
@@ -249,7 +330,7 @@ export default function Products() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className="px-4 py-1.5 rounded-full text-sm font-medium transition"
+                className="px-4 py-2 rounded-full text-sm font-semibold transition"
                 style={{
                   backgroundColor:
                     activeCategory === cat ? THEME.primary : THEME.surfaceStrong,
@@ -268,12 +349,13 @@ export default function Products() {
               </button>
             ))}
           </div>
+          </div>
 
           {categoryInfo && (
             <div
-              className="rounded-xl px-4 py-3 max-w-2xl"
+              className="rounded-2xl px-4 py-3 max-w-2xl"
               style={{
-                backgroundColor: THEME.surfaceStrong,
+                backgroundColor: THEME.surface,
                 border: `1px solid ${THEME.border}`,
               }}
             >
@@ -313,7 +395,7 @@ export default function Products() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -321,14 +403,26 @@ export default function Products() {
           )}
         </div>
       ) : (
-        <div className="space-y-5">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold" style={{ color: THEME.textStrong }}>
-              Paquetes disponibles
-            </p>
-            <p className="text-sm" style={{ color: THEME.text }}>
-              Combos listos para regalar o decorar.
-            </p>
+        <div className="space-y-6">
+          <div
+            className="rounded-[1.5rem] p-5 md:p-6"
+            style={{
+              backgroundColor: THEME.primary,
+              color: THEME.textInverse,
+            }}
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="inline-flex items-center gap-2 text-sm font-semibold">
+                  <Gift size={16} />
+                  Paquetes disponibles
+                </p>
+                <h2 className="font-display mt-2 text-3xl font-black leading-tight md:text-4xl">
+                  Combos listos para regalar
+                </h2>
+              </div>
+              <ArrowRight size={22} style={{ color: "rgba(255,255,255,0.72)" }} />
+            </div>
           </div>
 
           {loadingPkgs ? (
@@ -354,7 +448,7 @@ export default function Products() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {filteredPackages.map((pkg) => {
                 // productos reales de este paquete
                 const pkgProducts = allProducts.filter((p) =>
